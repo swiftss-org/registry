@@ -1,16 +1,16 @@
 # Tanzania Mesh Hernia Registry
 Tanzania Mesh Hernia Registry, thmr, is a mobile-first website and database designed to record and track Mesh Hernia operations in Tanzania. It was built by and for the SWIFTSS charity who are focused on improving the availability and effectiveness of mesh hernia surgery across Tanzania.
 
-The code is available under a GPL v3 license on https://github.com/apaulsmith/thmr. Issues should be reported to https://github.com/apaulsmith/thmr/issues and project tracking can also be found at https://github.com/apaulsmith/thmr/projects/1.  
+The code is available under a GPL v3 license on git clone https://github.com/swiftss-org/thmr. Issues should be reported to https://github.com/swiftss-org/thmr/issues and project tracking can also be found at https://github.com/swiftss-org/thmr/projects/1.  
 
 ## Implementation
 thmr is a Python 3 Flask application using SQLAlchemy for persistence. It is hosted on AWS ElasticBeanstalk backed by an AWS RDS Aurora MySQL compatible database. Bootstrap is used as the front-end component library. The code is maintained in GitHub and licensed under GPL v3. VirtualEnv is used to maintain Python dependencies. PyTest is used as a unit testing framework.
 
 ## Getting and running the code
 
-Clone the source code from GitHub	
+Clone the source code from GitHub
 ~~~~
-$ git clone https://github.com/apaulsmith/thmr.git
+$ git clone https://github.com/swiftss-org/thmr.git
 $ cd thmr
 ~~~~
 
@@ -35,7 +35,7 @@ $ python run.py --help
 Thmr follows the standard layout for a Flask application.
 
 - application.py provides WSGI entry point
-- app/routes defines the URL routing and is the main entry point for the application 
+- app/routes defines the URL routing and is the main entry point for the application
 - app/forms uses WTForms to define the form data model
 - app/models defines the underlying data models in SQLAlchemy
 - app/formatters provides front-end formatters for types such as dates, datetimes, etc.
@@ -94,8 +94,8 @@ Full backups are not currently taken!
 ## Interface & Navigation
 The interface is built around the actions of finding a patient, creating a new patient or finding an episode. Recording, viewing or editing an episode happens off these launch points.
 
-- To edit a Patients details -- Find the Patient, update their details and click save. 
-- To record a new Episode -- Find the patient, click record new episode 
+- To edit a Patients details -- Find the Patient, update their details and click save.
+- To record a new Episode -- Find the patient, click record new episode
 - To edit an existing episode -- Find the patient, pick the episode to edit, click view/edit, update the details and click save.
 
 ##Infrastructure
@@ -105,5 +105,4 @@ The application is deployed on AWS Elastic Beanstalk. The database is a mySQL db
 
 The load balancer fronts https to the world and redirect to http internally within EB. The https certificate is also setup through AWS for `*.swiftss.org`.
 
-Custom domain name routing is achieved by a CNAME entry on the swiftss.org domain pointing to the EB instance. 
-  
+Custom domain name routing is achieved by a CNAME entry on the swiftss.org domain pointing to the EB instance.
