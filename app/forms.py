@@ -78,6 +78,9 @@ class EpisodeForm(FlaskForm):
     updated_by = HiddenField('Updated By')
     updated_at = HiddenField('Updated At')
 
+    attendee_id = SelectField('Attendee')
+    attendees = HiddenField('Attendees')
+
 
 class EpisodeEditForm(EpisodeForm):
     episode_type = SelectField('Episode Type',

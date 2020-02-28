@@ -2,46 +2,57 @@
     {{ form.hidden_tag() }}
     <div class="form-group">
         {{ form.episode_type.label(class='col-form-label') }}<br/>
-        {{ form.episode_type(class='form-control') }}
+        {{ form.episode_type(class='form-control', disabled=edit_disabled) }}
         {{ macros.with_errors(form.episode_type) }}
     </div>
     <div class="form-group">
         {{ form.date.label(class='col-form-label') }}<br/>
-        {{ form.date(class='form-control') }}
+        {{ form.date(class='form-control', disabled=edit_disabled) }}
         {{ macros.with_errors(form.date) }}
     </div>
     <div class="form-group">
         {{ form.patient_id.label(class='col-form-label') }}<br/>
-        {{ form.patient_id(class='form-control',disabled=true) }}
+        {{ form.patient_id(class='form-control', disabled=edit_disabled) }}
         {{ macros.with_errors(form.patient_id) }}
     </div>
     <div class="form-group">
         {{ form.hospital_id.label(class='col-form-label') }}<br/>
-        {{ form.hospital_id(class='form-control') }}
+        {{ form.hospital_id(class='form-control', disabled=edit_disabled) }}
         {{ macros.with_errors(form.hospital_id) }}
     </div>
     <div>
         <label class="col-form-label">Attendees</label><br/>
-        {% if episode.attendees %}
-        <table class="table table-striped">
+        {{ form.attendees(class='form-control') }}
+        <table id="attendee_table" class="table table-striped">
             <thead>
             <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Comments</th>
+                <th></th>
+                <th style="display:none;">Id</th>
+                <th scope="col" data-sortable="true">Name</th>
+                <th scope="col" data-sortable="true">Comments</th>
             </tr>
             </thead>
             <tbody>
             {% for a in episode.attendees %}
             <tr>
+                <td>
+                    <button type="button" class="btn btn-danger">X</button>
+                </td>
+                <td style="display:none;">{{ a.user.id }}</td>
                 <td>{{ a.user.name }}</td>
                 <td>{{ a.comments }}</td>
             </tr>
             {% endfor %}
             <tbody>
         </table>
-        {% else %}
-        <input class="form-control" type="text" placeholder="" readonly>
-        {% endif %}
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col">
+            {{ form.attendee_id(class='form-control', disabled=edit_disabled) }}
+        </div>
+        <div class="col-md-auto">
+            <button class="btn btn-primary" type="button" onclick="addAttendee()">Add</button>
+        </div>
     </div>
     <p>
         {{ form.surgery_id.label(class='col-form-label') }}
@@ -112,7 +123,7 @@
     {% else %}
     <input class="form-control" type="text" placeholder="" readonly>
     {% endif %}
-    {{ form.surgery_id(class='form-control') }}
+    {{ form.surgery_id(class='form-control', disabled=edit_disabled) }}
     </p>
     <div>
         <label class="col-form-label">Complications</label><br/>
@@ -139,7 +150,7 @@
     </div>
     <div class="form-group">
         {{ form.comments.label(class='col-form-label') }}<br/>
-        {{ form.comments(class='form-control') }}
+        {{ form.comments(class='form-control', disabled=edit_disabled) }}
         {{ macros.with_errors(form.comments) }}
     </div>
     {{ macros.with_created_by(form) }}
@@ -147,10 +158,3 @@
         <a href="{{ url_for('patient_search') }}" class="btn btn-secondary">Cancel</a>
     </p>
 </form>
-<script>
-document.addEventListener("DOMContentLoaded", function(event) {
-  $('#date').datepicker({
-    format: "yyyy-mm-dd"
-  });
-});
-</script>

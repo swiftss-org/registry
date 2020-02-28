@@ -107,7 +107,7 @@ class EpisodeAttendee(db.Model, ExtendedBase):
     comments = Column(String(LONG_TEXT_LENGTH), nullable=False, default='none')
 
     def __repr__(self):
-        return "{}: [user_id='{}', hospital_id='{}']".format(self.__tablename__, self.user_id, self.hospital_id)
+        return "{}: [user_id='{}', episode_id='{}']".format(self.__tablename__, self.user_id, self.episode_id)
 
 
 class Patient(db.Model, ExtendedBase):

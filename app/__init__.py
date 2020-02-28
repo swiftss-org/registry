@@ -1,6 +1,7 @@
 import distutils
 import logging
 import os
+import tempfile
 
 from flask import Flask
 from flask_login import LoginManager
@@ -38,7 +39,7 @@ def create_app(unit_test=False):
 
         database_url = 'mysql+mysqlconnector://%(USER)s:%(PASSWORD)s@%(HOST)s:%(PORT)s/%(NAME)s' % DATABASE
     else:
-        database_url = 'sqlite:///:memory:'
+        database_url = 'sqlite:///' + os.path.join(tempfile.gettempdir(), 'registry.db')
 
     logging.info('Initalising SQLAlchmeny with database URL {}'.format(database_url))
 

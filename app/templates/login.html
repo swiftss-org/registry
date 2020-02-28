@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
+    <div class="jumbotron" style="background-color:#f5f5f5">
+        <h1 class="display-4">Tanzania Mesh Hernia Project Registry.</h1>
+        <p class="lead">Please record details of all patients and hernias repaired with mesh in your centre.</p>
+    </div>
     <div class="row">
         <div class="col-sm">
         </div>
@@ -17,8 +21,8 @@
                 </div>
                 {% endfor %}
                 <p>
-                {{ form.password.label(class='col-form-label') }}<br/>
-                {{ form.password(class='form-control',required=true) }}
+                    {{ form.password.label(class='col-form-label') }}<br/>
+                    {{ form.password(class='form-control',required=true) }}
                 </p>
                 {% for error in form.username.errors %}
                 <div class="alert alert-danger" role="alert">
@@ -30,6 +34,16 @@
         </div>
         <div class="col-sm">
         </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <p><i>The Tanzania Mesh Hernia Project Registry is a joint project between <a
+                href="http://swiftss.org">SWIFTSS</a>
+            and the TSA.</i></p>
+    </div>
+    <div class="row">
+        <p><img src="{{ url_for('static', filename='tsa-logo-transparent.png') }}" height="162"/></p>
+        <p><img src="{{ url_for('static', filename='swiftss-logo-large.png') }}" height="162"/></p>
     </div>
 </div>
 {% endblock %}

@@ -1,4 +1,5 @@
 import logging
+import json
 from flask import current_app as application, send_file
 from flask import jsonify, request, render_template, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user, login_required
@@ -151,8 +152,10 @@ def episode(id):
     episode = db.session.query(Episode).filter(Episode.id == id).first()
 
     form = EpisodeEditForm(obj=episode)
+    form.patient_id.disabled = True
     form.hospital_id.choices = _hospital_id_choices()
     form.patient_id.choices = _patient_id_choices()
+    form.attendee_id.choices = _attendee_id_choices()
 
     if form.validate_on_submit():
         episode.episode_type = form.episode_type.data
@@ -175,8 +178,10 @@ def episode(id):
 @login_required
 def episode_search():
     form = EpisodeSearchForm()
+    form.patient_id.disabled = False
     form.hospital_id.choices = _hospital_id_choices(include_empty=True)
     form.patient_id.choices = _patient_id_choices(include_empty=True)
+    form.attendee_id.choices = _attendee_id_choices()
 
     if form.is_submitted():
         filter = []
@@ -190,9 +195,13 @@ def episode_search():
             filter.append(Episode.patient_id == form.patient_id.data)
 
         episodes = db.session.query(Episode).filter(and_(*filter)).order_by(Episode.date).all()
-        return render_template('episode_search.html', title='Episode Search', form=form, results=episodes)
+        return render_template('episode_search.html',
+                               title='Episode Search',
+                               form=form,
+                               results=episodes,
+                               edit_disabled=True)
 
-    return render_template('episode_search.html', title='Episode Search', form=form)
+    return render_template('episode_search.html', title='Episode Search', form=form, edit_disabled=True)
 
 
 @application.route('/episode_create', methods=['GET', 'POST'])
@@ -202,6 +211,7 @@ def episode_create():
     form = EpisodeEditForm(obj=episode)
     form.hospital_id.choices = _hospital_id_choices()
     form.patient_id.choices = _patient_id_choices()
+    form.attendee_id.choices = _attendee_id_choices()
 
     if form.validate_on_submit():
         episode.episode_type = form.episode_type.data
@@ -210,6 +220,9 @@ def episode_create():
         episode.hospital_id = form.hospital_id.data
         episode.surgery_id = form.surgery_id.data
         episode.comments = form.comments.data
+
+        attendees_json = form.attendees.data
+        attendees_dict = json.loads(attendees_json)
 
         episode.created_by = current_user
         episode.updated_by = current_user
@@ -220,7 +233,10 @@ def episode_create():
         flash('Episode details have been recorded.')
         return redirect(url_for('episode', id=episode.id))
 
-    return render_template('episode.html', title='Record Episode Details', form=form, episode=episode)
+    return render_template('episode.html', title='Record Episode Details',
+                           form=form,
+                           episode=episode,
+                           edit_disabled=False)
 
 
 @application.route('/typeahead/patients', methods=['GET'])
@@ -335,7 +351,7 @@ def _patient_id_choices(include_empty=False):
     if include_empty:
         choices = [('', '(Any)')] + choices
 
-    return choices
+    return _none_guard(choices)
 
 
 def _hospital_id_choices(include_empty=False):
@@ -345,4 +361,22 @@ def _hospital_id_choices(include_empty=False):
     if include_empty:
         choices = [('', '(Any)')] + choices
 
-    return choices
+    return _none_guard(choices)
+
+
+def _attendee_id_choices(include_empty=False):
+    choices = [(str(h.id), h.name) for h in
+               db.session.query(User).order_by(User.name).all()]
+
+    if include_empty:
+        choices = [('', '(Any)')] + choices
+
+    return _none_guard(choices)
+
+
+def _none_guard(value):
+    if value is None:
+        logging.warning('Returning empty array instead of None!')
+        return []
+    else:
+        return value

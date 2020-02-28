@@ -20,13 +20,12 @@
                         <th scope="col">Type</th>
                         <th scope="col">Hospital</th>
                         <th scope="col">Procedure</th>
-                        <th scope="col"></th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for episode in episodes %}
                     <tr>
-                        <th scope="row">{{ episode.date }}</th>
+                        <td scope="row"><a href="{{ url_for('episode', id=episode.id) }}">{{ episode.date }}</a></td>
                         <td>{{ episode.episode_type.name }}</td>
                         <td>{{ episode.hospital.name }}</td>
                         {% if episode.surgery %}
@@ -34,7 +33,6 @@
                         {% else %}
                             <td></td>
                         {% endif %}
-                        <td><a href="{{ url_for('episode', id=episode.id) }}">View/Edit</a></td>
                     </tr>
                     {% endfor %}
                     <tbody>
