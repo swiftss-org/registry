@@ -46,7 +46,7 @@ def _episode(patient, procedure, users):
     d = _date_of_surgery(1)
 
     if episode_type == EpisodeType.Surgery:
-        surgery = _surgery(procedure)
+        surgery = _surgery(procedure, users)
     else:
         surgery = None
 
@@ -131,7 +131,7 @@ def _hospitals() -> List[Hospital]:
     return hospitals
 
 
-def _surgery(procedure):
+def _surgery(procedure, users):
     cepod = random.choice(list(Cepod))
     los = random.randint(2, 10)
     date_of_surgery = _date_of_surgery(los)
@@ -158,7 +158,9 @@ def _surgery(procedure):
         opd_infection=opd_infection,
         opd_comments=opd_comments,
         comments=comments,
-        procedure=procedure
+        procedure=procedure,
+        created_by=random.choice(users),
+        updated_by=random.choice(users),
     )
 
 

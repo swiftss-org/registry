@@ -89,7 +89,6 @@
             <td>Additional Procedure</td>
             <td>{{ episode.surgery.additional_procedure }}</td>
         </tr>
-
         <tr>
             <td>Antibiotics</td>
             <td>{{ episode.surgery.antibiotics }}</td>
@@ -120,11 +119,15 @@
         </tr>
         <tbody>
     </table>
+    <a href="{{ url_for('surgery', id=episode.surgery.id) }}" class="btn btn-primary">Edit Surgery Details</a>
     {% else %}
-    <input class="form-control" type="text" placeholder="" readonly>
+        {% if episode.id %}
+            <a href="{{ url_for('surgery_create', episode_id=episode.id) }}" class="btn btn-primary">Record Surgery Details</a>
+        {% else %}
+            <button class="btn btn-primary" disabled>Record Surgery Details</button>
+        {% endif %}
     {% endif %}
     {{ form.surgery_id(class='form-control', disabled=edit_disabled) }}
-    </p>
     <div>
         <label class="col-form-label">Complications</label><br/>
         {% if episode.complications %}

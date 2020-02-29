@@ -6,10 +6,10 @@ from flask_login import current_user, login_user, logout_user, login_required
 from sqlalchemy import and_
 from werkzeug.urls import url_parse
 
-from app import db, login, reporting
+from app import db, login, reporting, attendees_parser
 from app.dao.dao import Dao
-from app.forms import LoginForm, PatientSearchForm, PatientEditForm, EpisodeEditForm, EpisodeSearchForm
-from app.models import User, Patient, Episode, Hospital
+from app.forms import LoginForm, PatientSearchForm, PatientEditForm, EpisodeEditForm, EpisodeSearchForm, SurgeryForm
+from app.models import User, Patient, Episode, Hospital, Surgery, Procedure
 from app.tests import data_generator
 from app.util.filter import like_all
 
@@ -221,8 +221,7 @@ def episode_create():
         episode.surgery_id = form.surgery_id.data
         episode.comments = form.comments.data
 
-        attendees_json = form.attendees.data
-        attendees_dict = json.loads(attendees_json)
+        episode.attendees = attendees_parser.from_json(form.attendees.data, episode.id)
 
         episode.created_by = current_user
         episode.updated_by = current_user
@@ -237,6 +236,82 @@ def episode_create():
                            form=form,
                            episode=episode,
                            edit_disabled=False)
+
+
+@application.route('/surgery/<int:id>', methods=['GET', 'POST'])
+@login_required
+def surgery(id):
+    surgery = db.session.query(Surgery).filter(Surgery.id == id).first()
+    form = SurgeryForm(obj=surgery)
+    form.procedure_id.choices = _procedure_id_choices()
+
+    if form.validate_on_submit():
+        surgery.cepod = form.cepod.data
+        surgery.date_of_discharge = form.date_of_discharge.data
+        surgery.side = form.side.data
+        surgery.primary = form.primary.data
+        surgery.type = form.type.data
+        surgery.additional_procedure = form.additional_procedure.data
+        surgery.antibiotics = form.antibiotics.data
+        surgery.comments = form.comments.data
+        surgery.opd_rv_date = form.opd_rv_date.data
+        surgery.opd_pain = form.opd_pain.data
+        surgery.opd_numbness = form.opd_numbness.data
+        surgery.opd_infection = form.opd_infection.data
+        surgery.opd_comments = form.opd_comments.data
+
+        episode.updated_by = current_user
+
+        db.session.commit()
+
+        flash('Surgery details have been updated.')
+        return redirect(url_for('surgery', id=surgery.id))
+
+    return render_template('surgery.html', title='Surgery Details', form=form, surgery=surgery)
+
+
+@application.route('/surgery_create/<int:episode_id>', methods=['GET', 'POST'])
+@login_required
+def surgery_create(episode_id):
+    procedure_id_choices = _procedure_id_choices()
+
+    surgery = Surgery()
+    episode = db.session.query(Episode).filter(Episode.id == episode_id).first()
+
+    if episode is None:
+        raise ValueError('Unable to find an episode with id {}'.format(episode_id))
+
+    surgery.episode = episode
+    episode.surgery = surgery
+
+    form = SurgeryForm(obj=surgery)
+    form.procedure_id.choices = procedure_id_choices
+
+    if form.validate_on_submit():
+        surgery.procedure_id = form.procedure_id.data
+        surgery.cepod = form.cepod.data
+        surgery.date_of_discharge = form.date_of_discharge.data
+        surgery.side = form.side.data
+        surgery.primary = form.primary.data
+        surgery.type = form.type.data
+        surgery.additional_procedure = form.additional_procedure.data
+        surgery.antibiotics = form.antibiotics.data
+        surgery.comments = form.comments.data
+        surgery.opd_rv_date = form.opd_rv_date.data
+        surgery.opd_pain = form.opd_pain.data
+        surgery.opd_numbness = form.opd_numbness.data
+        surgery.opd_infection = form.opd_infection.data
+        surgery.opd_comments = form.opd_comments.data
+
+        surgery.created_by = current_user
+        surgery.updated_by = current_user
+
+        db.session.commit()
+
+        flash('Surgery details have been updated.')
+        return redirect(url_for('surgery', id=surgery.id))
+
+    return render_template('surgery.html', title='Surgery Details', form=form, surgery=surgery)
 
 
 @application.route('/typeahead/patients', methods=['GET'])
@@ -367,6 +442,16 @@ def _hospital_id_choices(include_empty=False):
 def _attendee_id_choices(include_empty=False):
     choices = [(str(h.id), h.name) for h in
                db.session.query(User).order_by(User.name).all()]
+
+    if include_empty:
+        choices = [('', '(Any)')] + choices
+
+    return choices
+
+
+def _procedure_id_choices(include_empty=False):
+    choices = [(str(h.id), h.name) for h in
+               db.session.query(Procedure).order_by(Procedure.name).all()]
 
     if include_empty:
         choices = [('', '(Any)')] + choices

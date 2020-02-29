@@ -1,6 +1,11 @@
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     <div class="form-group">
+        {{ form.procedure_id.label(class='col-form-label') }}<br/>
+        {{ form.procedure_id(class='form-control') }}
+        {{ macros.with_errors(form.procedure_id) }}
+    </div>
+    <div class="form-group">
         {{ form.cepod.label(class='col-form-label') }}<br/>
         {{ form.cepod(class='form-control') }}
         {{ macros.with_errors(form.cepod) }}
@@ -9,7 +14,6 @@
         {{ form.date_of_discharge.label(class='col-form-label') }}<br/>
         {{ form.date_of_discharge(class='form-control') }}
         {{ macros.with_errors(form.date_of_discharge) }}
-
     </div>
     <div class="form-group">
         {{ form.side.label(class='col-form-label') }}<br/>
@@ -17,8 +21,14 @@
         {{ macros.with_errors(form.side) }}
     </div>
     <div class="form-group">
-        {{ form.primary.label(class='col-form-label') }}<br/>
-        {{ form.primary(class='form-control') }}
+        <div class="row justify-content-md-center">
+            <div class="col">
+                {{ form.primary.label(class='col-form-label') }}
+            </div>
+            <div class="col">
+                {{ form.primary(class='form-control') }}
+            </div>
+        </div>
         {{ macros.with_errors(form.primary) }}
     </div>
     <div class="form-group">
@@ -76,5 +86,6 @@
     {{ macros.with_created_by(form) }}
     <p>{{ form.submit(class='btn btn-primary', onclick="$('#spinner').show()") }}
         <a href="{{ url_for('episode_search') }}" class="btn btn-secondary">Cancel</a>
+        <a href="{{  url_for('episode', id=surgery.episode.id) }}" class="btn btn-secondary">Show Episode</a>
     </p>
 </form>

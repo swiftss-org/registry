@@ -49,6 +49,18 @@
                 } else {
                     value = $.trim($(cell).text());
                 }
+
+                if (value == "")
+                {
+                    if($(cell).length == 1)
+                    {
+                        if(notNull($(cell)[0]) && notNull($(cell)[0].firstChild))
+                        {
+                            value = $.trim($(cell)[0].firstChild.value)
+                        }
+                    }
+                }
+
                 result = notNull(override) ? override : value;
             }
             return result;

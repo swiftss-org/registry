@@ -203,6 +203,14 @@ class Surgery(db.Model, ExtendedBase):
     opd_comments = Column(String(LONG_TEXT_LENGTH), nullable=False, default='none')
     comments = Column(String(LONG_TEXT_LENGTH), nullable=False, default='none')
 
+    created_at = Column('created_at', DateTime(), default=datetime.now, nullable=False)
+    created_by_id = Column(ForeignKey('Users.id'), nullable=False)
+    created_by = relationship(User, foreign_keys=[created_by_id])
+
+    updated_at = Column('updated_at', DateTime(), default=datetime.now, onupdate=datetime.now, nullable=False)
+    updated_by_id = Column(ForeignKey('Users.id'), nullable=False)
+    updated_by = relationship(User, foreign_keys=[updated_by_id])
+
     __mapper_args__ = {
         "version_id_col": version_id
     }

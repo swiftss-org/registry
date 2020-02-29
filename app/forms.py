@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
+from strtobool import strtobool
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, \
-    HiddenField
+    HiddenField, RadioField
 from wtforms.ext.dateutil.fields import DateField
 from wtforms.validators import DataRequired
 
@@ -37,6 +38,20 @@ def coerce_for_enum(enum):
                 raise ValueError(name)
 
     return coerce
+
+
+def coerce_for_bool():
+    def coerce(name):
+        if isinstance(name, bool):
+            return name
+
+        return strtobool(name)
+
+    return coerce
+
+
+def choice_for_bool():
+    return [(True, 'True'), (False, 'False')]
 
 
 class LoginForm(FlaskForm):
@@ -97,6 +112,7 @@ class EpisodeSearchForm(EpisodeForm):
 
 
 class SurgeryForm(FlaskForm):
+    procedure_id = SelectField('Procedure')
     cepod = SelectField('CEPOD',
                         choices=choice_for_enum(Cepod, include_blank=False),
                         coerce=coerce_for_enum(Cepod))
@@ -105,7 +121,9 @@ class SurgeryForm(FlaskForm):
     side = SelectField('Side',
                        choices=choice_for_enum(Side, include_blank=False),
                        coerce=coerce_for_enum(Side))
-    primary = BooleanField('Primary?')
+    primary = SelectField('Primary',
+                          choices=choice_for_bool(),
+                          coerce=coerce_for_bool())
     type = SelectField('Type',
                        choices=choice_for_enum(Type, include_blank=False),
                        coerce=coerce_for_enum(Type))
@@ -119,3 +137,10 @@ class SurgeryForm(FlaskForm):
     opd_numbness = StringField('Numbness')
     opd_infection = StringField('Infection')
     opd_comments = TextAreaField('Comments')
+
+    created_by = HiddenField('Created By')
+    created_at = HiddenField('Created At')
+    updated_by = HiddenField('Updated By')
+    updated_at = HiddenField('Updated At')
+
+    submit = SubmitField('Save Changes')
