@@ -351,7 +351,7 @@ def _patient_id_choices(include_empty=False):
     if include_empty:
         choices = [('', '(Any)')] + choices
 
-    return _none_guard(choices)
+    return choices
 
 
 def _hospital_id_choices(include_empty=False):
@@ -361,7 +361,7 @@ def _hospital_id_choices(include_empty=False):
     if include_empty:
         choices = [('', '(Any)')] + choices
 
-    return _none_guard(choices)
+    return choices
 
 
 def _attendee_id_choices(include_empty=False):
@@ -371,12 +371,4 @@ def _attendee_id_choices(include_empty=False):
     if include_empty:
         choices = [('', '(Any)')] + choices
 
-    return _none_guard(choices)
-
-
-def _none_guard(value):
-    if value is None:
-        logging.warning('Returning empty array instead of None!')
-        return []
-    else:
-        return value
+    return choices
