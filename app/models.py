@@ -243,7 +243,6 @@ class Episode(db.Model, ExtendedBase):
                              cascade='all,delete-orphan',
                              single_parent=True,
                              backref=backref('roles', cascade='all'))
-    # backref=backref("attendees", cascade="save-update, merge, delete, delete-orphan"))
 
     surgery_id = Column(ForeignKey('Surgeries.id'), nullable=True)
     surgery = relationship(Surgery)
