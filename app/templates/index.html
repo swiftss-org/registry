@@ -5,49 +5,75 @@
         <h1 class="display-4">Tanzania Mesh Hernia Project Registry.</h1>
         <p class="lead">Please record details of all patients and hernias repaired with mesh in your centre.</p>
     </div>
-    <div class="card-deck mb-3 text-center">
-        <div class="card mb-4 shadow-sm">
-            <div class="card-header">
-                <h4 class="my-0 font-weight-normal">Patients</h4>
+    <div class="row">
+        <div class="card-deck mb-3 text-center">
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Patients</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li><a class="btn btn-lg btn-block btn-outline-primary" href="{{ url_for('patient_create') }}">Register
+                            a new Patient</a></li>
+                        <li><br/></li>
+                        <li><a class="btn btn-lg btn-block btn-outline-primary" href="{{ url_for('patient_search') }}">Find
+                            an existing Patient</a></li>
+                    </ul>
+                </div>
             </div>
-            <div class="card-body">
-                <ul class="list-unstyled mt-3 mb-4">
-                    <li><a class="btn btn-lg btn-block btn-outline-primary" href="{{ url_for('patient_create') }}">Register
-                        a new Patient</a></li>
-                    <li><br/></li>
-                    <li><a class="btn btn-lg btn-block btn-outline-primary" href="{{ url_for('patient_search') }}">Find
-                        an existing Patient</a></li>
-                </ul>
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Episodes</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li><a class="btn btn-lg btn-block btn-outline-primary" href="{{ url_for('episode_create') }}">Record
+                            an new Episode</a>
+                        <li><br/></li>
+                        <li><a class="btn btn-lg btn-block btn-outline-primary" href="{{ url_for('episode_search') }}">Find
+                            an existing Episode</a>
+                    </ul>
+                </div>
+            </div>
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Reports</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>
+                            <a class="btn btn-lg btn-block btn-outline-primary"
+                               href="{{ url_for('report', report_name='Patient') }}">Patient Reports</a>
+                        </li>
+                        <li><br/></li>
+                        <li>
+                            <a class="btn btn-lg btn-block btn-outline-primary"
+                               href="{{ url_for('report', report_name='Episode') }}">Episode Reports</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="card mb-4 shadow-sm">
-            <div class="card-header">
-                <h4 class="my-0 font-weight-normal">Episodes</h4>
-            </div>
-            <div class="card-body">
-                <ul class="list-unstyled mt-3 mb-4">
-                    <li><a class="btn btn-lg btn-block btn-outline-primary" href="{{ url_for('episode_create') }}">Record
-                        an new Episode</a>
-                    <li><br/></li>
-                    <li><a class="btn btn-lg btn-block btn-outline-primary" href="{{ url_for('episode_search') }}">Find
-                        an existing Episode</a>
-                </ul>
-            </div>
-        </div>
-        <div class="card mb-4 shadow-sm">
-            <div class="card-header">
-                <h4 class="my-0 font-weight-normal">Reports</h4>
-            </div>
-            <div class="card-body">
-                <ul class="list-unstyled mt-3 mb-4">
-                    <li>
-                        <a class="btn btn-lg btn-block btn-outline-primary" href="{{ url_for('report', report_name='Patient') }}">Patient Reports</a>
-                    </li>
-                    <li><br/></li>
-                    <li>
-                        <a class="btn btn-lg btn-block btn-outline-primary" href="{{ url_for('report', report_name='Episode') }}">Episode Reports</a>
-                    </li>
-                </ul>
+    </div>
+    <div class="row">
+        <div class="card-deck mb-3 text-center">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Users</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>
+                            <a class="btn btn-lg btn-block btn-outline-primary"
+                               href="{{ url_for('user_self') }}">Edit User Details</a>
+                        </li>
+                        <li><br/></li>
+                        <li>
+                            <a class="btn btn-lg btn-block btn-outline-primary"
+                               href="{{ url_for('user_create') }}">Register New User</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

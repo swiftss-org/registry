@@ -61,6 +61,28 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Sign In')
 
 
+class UserForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
+
+
+class UserCreateForm(UserForm):
+    new_password = PasswordField('New Password')
+    verify_password = PasswordField('Verify Password')
+    submit = SubmitField('Register User')
+
+
+class UserEditForm(UserForm):
+    current_password = PasswordField('Current Password')
+    new_password = PasswordField('New Password')
+    verify_password = PasswordField('Verify Password')
+    active = SelectField('Active',
+                         default=True,
+                         choices=choice_for_bool(),
+                         coerce=coerce_for_bool())
+    submit = SubmitField('Save Changes')
+
+
 class PatientForm(FlaskForm):
     name = StringField('Name')
     email = StringField('Email')

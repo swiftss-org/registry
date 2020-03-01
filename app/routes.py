@@ -8,7 +8,8 @@ from werkzeug.urls import url_parse
 
 from app import db, login, reporting, attendees_parser
 from app.dao.dao import Dao
-from app.forms import LoginForm, PatientSearchForm, PatientEditForm, EpisodeEditForm, EpisodeSearchForm, SurgeryForm
+from app.forms import LoginForm, PatientSearchForm, PatientEditForm, EpisodeEditForm, EpisodeSearchForm, SurgeryForm, \
+    UserEditForm
 from app.models import User, Patient, Episode, Hospital, Surgery, Procedure
 from app.tests import data_generator
 from app.util.filter import like_all
@@ -66,6 +67,77 @@ def login():
         return redirect(next_page)
 
     return render_template('login.html', title='Sign In', form=form)
+
+
+@application.route('/user/self', methods=['GET', 'POST'])
+@login_required
+def user_self():
+    return redirect(url_for('user', id=current_user.id))
+
+
+@application.route('/user/<int:id>', methods=['GET', 'POST'])
+@login_required
+def user(id):
+    user = db.session.query(User).filter(User.id == id).first()
+    form = UserEditForm(obj=user)
+
+    if form.validate_on_submit():
+        if not current_user.check_password(form.current_password.data):
+            flash('Unable to save changes as current password is not correct!'.format(user.name))
+            return redirect(url_for('user', id=user.id))
+
+        user.name = form.name.data
+        user.email = form.email.data
+        user.active = form.active.data
+
+        if len(form.new_password.data) > 0:
+            if form.new_password.data != form.verify_password.data:
+                flash('Unable to save changes as passwords for not match for {}!'.format(user.name))
+                return render_template('user_edit.html', title='Register New User', form=form, edit_disabled=False)
+
+            minimum_password_strength = application.config.get('MINIMUM_PASSWORD_STRENGTH', 0.3)
+            if user.check_password_strength(form.new_password.data) < minimum_password_strength:
+                flash('Unable to save changes as password is not strong enough for {}!'.format(user.name))
+                return render_template('user_edit.html', title='Register New User', form=form, edit_disabled=False)
+
+            user.set_password(form.new_password.data)
+
+        db.session.commit()
+
+        flash('User details for {} have been updated.'.format(user.name))
+        return redirect(url_for('user', id=user.id))
+
+    return render_template('user_edit.html', title='User Details', form=form, edit_disabled=False)
+
+
+@application.route('/user/create', methods=['GET', 'POST'])
+def user_create():
+    user = User()
+    form = UserEditForm(obj=user)
+
+    if form.validate_on_submit():
+        user.name = form.name.data
+        user.email = form.email.data
+        user.active = form.active.data
+
+        if form.new_password.data != form.verify_password.data:
+            flash('Unable to save changes as passwords for not match for {}!'.format(user.name))
+            return render_template('user_create.html', title='Register New User', form=form, edit_disabled=False)
+
+        minimum_password_strength = application.config.get('MINIMUM_PASSWORD_STRENGTH', 0.3)
+        if user.check_password_strength(form.new_password.data) < minimum_password_strength:
+            flash('Unable to save changes as password is not strong enough for {}!'.format(user.name))
+            return render_template('user_create.html', title='Register New User', form=form, edit_disabled=False)
+
+        user.set_password(form.new_password.data)
+
+        db.session.add(user)
+        db.session.commit()
+
+        flash('User details for {} have been updated.'.format(user.name))
+        return redirect(url_for('user', id=user.id))
+
+    return render_template('user_create.html', title='Register New User', form=form, edit_disabled=False)
 
 
 @application.route('/patient_search', methods=['GET', 'POST'])
@@ -164,6 +236,9 @@ def episode(id):
         episode.hospital_id = form.hospital_id.data
         episode.surgery_id = form.surgery_id.data
         episode.comments = form.comments.data
+
+        episode.attendees = attendees_parser.from_json(form.attendees.data, episode.id)
+
         episode.updated_by = current_user
 
         db.session.commit()
@@ -171,7 +246,7 @@ def episode(id):
         flash('Episode details have been updated.')
         return redirect(url_for('episode', id=episode.id))
 
-    return render_template('episode.html', title='Episode Details', form=form, episode=episode)
+    return render_template('episode.html', title='Episode Details', form=form, episode=episode, edit_disabled=False)
 
 
 @application.route('/episode_search', methods=['GET', 'POST'])

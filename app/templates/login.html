@@ -30,6 +30,9 @@
                 </div>
                 {% endfor %}
                 <p>{{ form.submit(class='btn btn-lg btn-primary btn-block') }}</p>
+                <p>
+                    <a href="{{ url_for('user_create') }}" class="btn btn-lg btn-secondary btn-block">Register New User</a>
+                </p>
             </form>
         </div>
         <div class="col-sm">

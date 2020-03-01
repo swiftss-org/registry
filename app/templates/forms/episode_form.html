@@ -34,13 +34,14 @@
             </thead>
             <tbody>
             {% for a in episode.attendees %}
-            <tr>
+            <tr id=attendee_row_{{ a.user.id }}>
                 <td>
-                    <button type="button" class="btn btn-danger">X</button>
+                    <button type="button" class="btn btn-danger" onclick="removeAttendee({{ a.user.id }})">X</button>
                 </td>
                 <td style="display:none;">{{ a.user.id }}</td>
                 <td>{{ a.user.name }}</td>
-                <td>{{ a.comments }}</td>
+                <td><input id="attendee_comments_{{ a.user.id }}" class="form-control" type="text" placeholder=""
+                           value="{{ a.comments }}"></td>
             </tr>
             {% endfor %}
             <tbody>
@@ -121,11 +122,11 @@
     </table>
     <a href="{{ url_for('surgery', id=episode.surgery.id) }}" class="btn btn-primary">Edit Surgery Details</a>
     {% else %}
-        {% if episode.id %}
-            <a href="{{ url_for('surgery_create', episode_id=episode.id) }}" class="btn btn-primary">Record Surgery Details</a>
-        {% else %}
-            <button class="btn btn-primary" disabled>Record Surgery Details</button>
-        {% endif %}
+    {% if episode.id %}
+    <a href="{{ url_for('surgery_create', episode_id=episode.id) }}" class="btn btn-primary">Record Surgery Details</a>
+    {% else %}
+    <button class="btn btn-primary" disabled>Record Surgery Details</button>
+    {% endif %}
     {% endif %}
     {{ form.surgery_id(class='form-control', disabled=edit_disabled) }}
     <div>
@@ -157,7 +158,8 @@
         {{ macros.with_errors(form.comments) }}
     </div>
     {{ macros.with_created_by(form) }}
-    <p>{{ form.submit(class='btn btn-primary') }}
+    <p>
+        {{ form.submit(class='btn btn-primary') }}
         <a href="{{ url_for('patient_search') }}" class="btn btn-secondary">Cancel</a>
     </p>
 </form>

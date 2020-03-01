@@ -1,0 +1,26 @@
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.name.label(class='col-form-label') }}<br/>
+        {{ form.name(class='form-control', disabled=edit_disabled) }}
+        {{ macros.with_errors(form.name) }}
+    </div>
+    <div class="form-group">
+        {{ form.email.label(class='col-form-label') }}<br/>
+        {{ form.email(class='form-control', disabled=edit_disabled) }}
+        {{ macros.with_errors(form.email) }}
+    </div>
+    <div class="form-group">
+        {{ form.new_password.label(class='col-form-label') }}<br/>
+        {{ form.new_password(class='form-control', disabled=edit_disabled) }}
+        {{ macros.with_errors(form.password) }}
+    </div>
+    <div class="form-group">
+        {{ form.verify_password.label(class='col-form-label') }}<br/>
+        {{ form.verify_password(class='form-control', disabled=edit_disabled) }}
+        {{ macros.with_errors(form.password) }}
+    </div>
+    <p>
+        {{ form.submit(class='btn btn-primary') }}
+    </p>
+</form>

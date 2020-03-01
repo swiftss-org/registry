@@ -3,8 +3,9 @@ from datetime import datetime
 
 from flask_login import UserMixin
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Date, Enum, Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from werkzeug.security import generate_password_hash, check_password_hash
+from password_strength import PasswordPolicy, PasswordStats
 
 from app import db
 
@@ -81,6 +82,7 @@ class User(db.Model, ExtendedBase, UserMixin):
     version_id = Column(Integer, nullable=False)
     name = Column(String(SHORT_TEXT_LENGTH), unique=True, nullable=False)
     email = Column(String(SHORT_TEXT_LENGTH), unique=True, nullable=False)
+    active = Column(Boolean, nullable=False, default=True)
     password_hash = Column(String(128), nullable=False)
 
     def set_password(self, password):
@@ -88,6 +90,10 @@ class User(db.Model, ExtendedBase, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    @staticmethod
+    def check_password_strength(password):
+        return PasswordStats(password).strength()
 
     __mapper_args__ = {
         "version_id_col": version_id
@@ -184,7 +190,7 @@ class Surgery(db.Model, ExtendedBase):
     version_id = Column(Integer, nullable=False)
 
     cepod = Column(Enum(Cepod), nullable=False)
-    date_of_discharge = Column(Date, nullable=True)
+    date_of_discharge = Column(Date, nullable=True, default=datetime.today())
 
     procedure_id = Column(Integer, ForeignKey('Procedures.id'), nullable=False)
     procedure = relationship(Procedure)
@@ -196,7 +202,7 @@ class Surgery(db.Model, ExtendedBase):
     type = Column(Enum(Type), nullable=False)
     additional_procedure = Column(String(LONG_TEXT_LENGTH), nullable=False, default='none')
     antibiotics = Column(String(LONG_TEXT_LENGTH), nullable=False, default='none')
-    opd_rv_date = Column(Date, nullable=True)
+    opd_rv_date = Column(Date, nullable=True, default=datetime.today())
     opd_pain = Column(String(SHORT_TEXT_LENGTH), nullable=False, default='none')
     opd_numbness = Column(String(SHORT_TEXT_LENGTH), nullable=False, default='none')
     opd_infection = Column(String(SHORT_TEXT_LENGTH), nullable=False, default='none')
@@ -233,7 +239,11 @@ class Episode(db.Model, ExtendedBase):
     hospital_id = Column(ForeignKey('Hospitals.id'), nullable=False)
     hospital = relationship(Hospital)
 
-    attendees = relationship('EpisodeAttendee')
+    attendees = relationship('EpisodeAttendee',
+                             cascade='all,delete-orphan',
+                             single_parent=True,
+                             backref=backref('roles', cascade='all'))
+    # backref=backref("attendees", cascade="save-update, merge, delete, delete-orphan"))
 
     surgery_id = Column(ForeignKey('Surgeries.id'), nullable=True)
     surgery = relationship(Surgery)
