@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask_wtf import FlaskForm
 from strtobool import strtobool
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, \
@@ -105,7 +107,7 @@ class PatientEditForm(PatientForm):
 
 
 class EpisodeForm(FlaskForm):
-    date = DateField('Date')
+    date = DateField('Date', default=datetime.now())
     patient_id = SelectField('Patient')
     hospital_id = SelectField('Hospital')
     surgery_id = HiddenField('Surgery')
