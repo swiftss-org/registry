@@ -168,3 +168,8 @@ class SurgeryForm(FlaskForm):
     updated_at = HiddenField('Updated At')
 
     submit = SubmitField('Save Changes')
+
+
+class AdminForm(FlaskForm):
+    command = StringField('Command')
+    execute = SubmitField('Execute')

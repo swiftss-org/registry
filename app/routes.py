@@ -7,9 +7,10 @@ from sqlalchemy import and_
 from werkzeug.urls import url_parse
 
 from app import db, login, reporting, attendees_parser
+from app.admin import admin_command
 from app.dao.dao import Dao
 from app.forms import LoginForm, PatientSearchForm, PatientEditForm, EpisodeEditForm, EpisodeSearchForm, SurgeryForm, \
-    UserEditForm
+    UserEditForm, AdminForm
 from app.models import User, Patient, Episode, Hospital, Surgery, Procedure
 from app.tests import data_generator
 from app.util.filter import like_all
@@ -443,6 +444,19 @@ def health_check():
     except Exception as e:
         logging.error('Health Check Failed!')
         raise e
+
+
+@application.route('/admin', methods=['GET', 'POST'])
+@login_required
+def admin():
+    form = AdminForm(obj=surgery)
+
+    if form.validate_on_submit():
+        command = form.command.data
+        response = admin_command.execute(application, command)
+        return render_template('admin.html', title='Admin Console', form=form, response=response)
+
+    return render_template('admin.html', title='Admin Console', form=form, response='Waiting...')
 
 
 @application.route('/thmr/data/<string:entity_name>', methods=['GET'])

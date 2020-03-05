@@ -12,6 +12,23 @@ TEST_ACCOUNT_EMAIL = 'thmr_test_account@example.com'
 TEST_ACCOUNT_PASSWORD = 'password'
 
 
+def create_default_data(session):
+    paul_user = User(name='Paul Smith', email='paul@swiftss.org')
+    paul_user.set_password('EWCabre9AWj5T9fU')
+    session.add(paul_user)
+
+    shim_user = User(name='Dr Mark Szymankiewicz', email='mark@swiftss.org')
+    shim_user.set_password('dGm768RvJvA6Fgux')
+    session.add(shim_user)
+
+    session.add(Hospital(name='Muheza, St Augustines', address='Muheza'))
+    session.add(Hospital(name='Korogwe', address='Korogwe'))
+    session.add(Hospital(name='Moshi, KCMC', address='Moshi'))
+    session.add(Hospital(name='Arusha, ALMC', address='Arusha'))
+    session.add(Hospital(name='Dodoma, Benjamin Mkapa National Hospital', address='Dodoma'))
+    session.add(Hospital(name='Test Hospital', address='Test'))
+
+
 def create_sample_data(session, num_users: int, num_patients: int):
     if session.query(User).filter(User.email == TEST_ACCOUNT_EMAIL).count() == 1:
         logging.info('Data generator has already been run in this database so skipping.')
