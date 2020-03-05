@@ -7,7 +7,6 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
 from app import formatters
-from app.admin import admin_command
 from app.util import pwd_generator
 from app.util.strtobool import strtobool
 
@@ -68,19 +67,9 @@ def create_app(unit_test=False):
     # app.json_encoder = CustomJSONEncoder()
 
     with app.app_context():
-        # Include our Routes
         from . import routes
-        from . import models
-        from . import forms
 
-        logging.info('Completed Flask setup for {}'.format(app))
-
-        # Clearly insane...
-        logging.info('Reset DB Starting')
-        admin_command.execute('reset_db')
-        logging.info('Reset DB Completed')
-
-        return app
+    return app
 
 
 def init_logging():
