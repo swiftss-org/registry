@@ -13,12 +13,12 @@
     <div class="form-group">
         {{ form.new_password.label(class='col-form-label') }}<br/>
         {{ form.new_password(class='form-control', disabled=edit_disabled) }}
-        {{ macros.with_errors(form.password) }}
+        {{ macros.with_errors(form.new_password) }}
     </div>
     <div class="form-group">
         {{ form.verify_password.label(class='col-form-label') }}<br/>
         {{ form.verify_password(class='form-control', disabled=edit_disabled) }}
-        {{ macros.with_errors(form.password) }}
+        {{ macros.with_errors(form.verify_password) }}
     </div>
     <p>
         {{ form.submit(class='btn btn-primary') }}

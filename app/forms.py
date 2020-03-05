@@ -1,12 +1,12 @@
 from datetime import datetime
 
 from flask_wtf import FlaskForm
-from strtobool import strtobool
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, \
     HiddenField, RadioField
 from wtforms.ext.dateutil.fields import DateField
 from wtforms.validators import DataRequired
 
+from app import strtobool
 from app.models import EpisodeType, Cepod, Side, Type
 
 
