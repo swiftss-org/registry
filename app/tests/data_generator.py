@@ -13,13 +13,17 @@ TEST_ACCOUNT_PASSWORD = 'password'
 
 
 def create_default_data(session):
-    paul_user = User(name='Paul Smith', email='paul@swiftss.org')
+    paul_user = User(name='Paul Smith', email='paul@swiftss.org', active=True)
+    # This is clearly terrible but it will have to do for now.
     paul_user.set_password('EWCabre9AWj5T9fU')
     session.add(paul_user)
+    logging.info('Create user {}'.format(paul_user.name))
 
-    shim_user = User(name='Dr Mark Szymankiewicz', email='mark@swiftss.org')
+    shim_user = User(name='Dr Mark Szymankiewicz', email='mark@swiftss.org', active=True)
+    # This is clearly terrible but it will have to do for now.
     shim_user.set_password('dGm768RvJvA6Fgux')
     session.add(shim_user)
+    logging.info('Create user {}'.format(shim_user.name))
 
     session.add(Hospital(name='Muheza, St Augustines', address='Muheza'))
     session.add(Hospital(name='Korogwe', address='Korogwe'))

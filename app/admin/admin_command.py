@@ -1,3 +1,5 @@
+import logging
+
 from app.tests import data_generator
 
 
@@ -27,6 +29,8 @@ def _reset_db(application):
     session = application.db.session
     with session.begin_nested():
         data_generator.create_default_data(session)
+
     session.commit()
+    logging.info('Session Commited')
 
     return "Done"
