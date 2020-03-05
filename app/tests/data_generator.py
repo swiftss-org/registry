@@ -3,10 +3,10 @@ import random
 from datetime import timedelta, date
 from typing import List
 
-from app import pwd_generator
 from app.models import User, Patient, Hospital, Surgery, Side, Type, Cepod, Episode, EpisodeType, \
     Procedure, Complication, EpisodeAttendee
 from app.tests import names
+from app.util import pwd_generator
 
 TEST_ACCOUNT_EMAIL = 'thmr_test_account@example.com'
 TEST_ACCOUNT_PASSWORD = 'password'
