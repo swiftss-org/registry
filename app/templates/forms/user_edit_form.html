@@ -11,6 +11,11 @@
         {{ macros.with_errors(form.email) }}
     </div>
     <div class="form-group">
+        {{ form.hospital_id.label(class='col-form-label') }}<br/>
+        {{ form.hospital_id(class='form-control', disabled=edit_disabled) }}
+        {{ macros.with_errors(form.email) }}
+    </div>
+    <div class="form-group">
         {{ form.current_password.label(class='col-form-label') }}<br/>
         {{ form.current_password(class='form-control', disabled=edit_disabled) }}
         {{ macros.with_errors(form.current_password) }}

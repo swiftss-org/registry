@@ -4,13 +4,11 @@
         {{ form.name.label(class='col-form-label') }}<br/>
         {{ form.name(class='form-control') }}
         {{ macros.with_errors(form.name) }}
-
     </div>
     <div class="form-group">
-        {{ form.email.label(class='col-form-label') }}<br/>
-        {{ form.email(class='form-control') }}
-        {{ macros.with_errors(form.email) }}
-
+        {{ form.national_id.label(class='col-form-label') }}<br/>
+        {{ form.national_id(class='form-control') }}
+        {{ macros.with_errors(form.national_id) }}
     </div>
     <div class="form-group">
         {{ form.gender.label(class='col-form-label') }}<br/>
@@ -26,16 +24,21 @@
         {{ form.hospital_id.label(class='col-form-label') }}<br/>
         {{ form.hospital_id(class='form-control') }}
         {{ macros.with_errors(form.hospital_id) }}
-
     </div>
     <div class="form-group">
         {{ form.address.label(class='col-form-label') }}<br/>
         {{ form.address(class='form-control') }}
         {{ macros.with_errors(form.address) }}
     </div>
+    <div class="form-group">
+        {{ form.next_action(class='form-control') }}
+        {{ macros.with_errors(form.next_action) }}
+    </div>
     {{ macros.with_created_by(form) }}
-    <p>{{ form.submit(class='btn btn-primary', onclick="$('#spinner').show()") }}
-        <a href="{{ url_for('patient_search') }}" class="btn btn-secondary">Cancel</a>
+    <p>
+        {{ form.submit(class='btn btn-primary', onclick="$('#spinner').show()") }}
+        <button id="submit2" class="btn btn-primary" onclick="submit_and_create_episode()">Save Changes and Record a New Episode</button>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
     </p>
     <div class="d-flex justify-content-center">
         <div id="spinner" class="spinner-border" role="status">

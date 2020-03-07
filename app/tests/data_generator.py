@@ -5,11 +5,8 @@ from typing import List
 
 from app.models import User, Patient, Hospital, Surgery, Side, Type, Cepod, Episode, EpisodeType, \
     Procedure, Complication, EpisodeAttendee
-from app.tests import names
+from app.tests import names, constants
 from app.util import pwd_generator
-
-TEST_ACCOUNT_EMAIL = 'thmr_test_account@example.com'
-TEST_ACCOUNT_PASSWORD = 'password'
 
 
 def create_default_data(session):
@@ -34,7 +31,7 @@ def create_default_data(session):
 
 
 def create_sample_data(session, num_users: int, num_patients: int):
-    if session.query(User).filter(User.email == TEST_ACCOUNT_EMAIL).count() == 1:
+    if session.query(User).filter(User.email == constants.TEST_ACCOUNT_EMAIL).count() == 1:
         logging.info('Data generator has already been run in this database so skipping.')
         return
     else:
@@ -97,8 +94,8 @@ def _users(num: int) -> List[User]:
     users = []
 
     # Default test account so that we can always login!
-    test_user = User(name='Test, Account', email=TEST_ACCOUNT_EMAIL)
-    test_user.set_password(TEST_ACCOUNT_PASSWORD)
+    test_user = User(name='Test, Account', email=constants.TEST_ACCOUNT_EMAIL)
+    test_user.set_password(constants.TEST_ACCOUNT_PASSWORD)
     users.append(test_user)
 
     existing_names = set()
@@ -125,13 +122,13 @@ def _patients(num: int, hospitals, users) -> List[Patient]:
     for i in range(0, num):
         gender = random.choice(['M', 'F'])
         name = names.name(gender)
-        email = names.email(name)
+        national_id = _national_id()
 
         patients.append(Patient(
             name=name,
             gender=gender,
             birth_year=date.today().year - random.randint(18, 90),
-            email=email,
+            national_id=national_id,
             address=names.address(),
             phone=names.phone(),
             hospital=random.choice(hospitals),
@@ -140,6 +137,11 @@ def _patients(num: int, hospitals, users) -> List[Patient]:
         ))
 
     return patients
+
+
+def _national_id():
+    constants.NATIONAL_ID_COUNTER = constants.NATIONAL_ID_COUNTER + random.randint(100, 10000)
+    return str(constants.NATIONAL_ID_COUNTER)
 
 
 def _hospitals() -> List[Hospital]:

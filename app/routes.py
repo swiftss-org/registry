@@ -1,19 +1,23 @@
 import logging
-import json
+from datetime import datetime
+
 from flask import current_app as application, send_file
 from flask import jsonify, request, render_template, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from sqlalchemy import and_
 from werkzeug.urls import url_parse
 
-from app import db, login, reporting, attendees_parser
-from app.admin import admin_command
-from app.dao.dao import Dao
+from app import db, login, reporting, attendees_parser, initalise
 from app.forms import LoginForm, PatientSearchForm, PatientEditForm, EpisodeEditForm, EpisodeSearchForm, SurgeryForm, \
     UserEditForm, AdminForm
 from app.models import User, Patient, Episode, Hospital, Surgery, Procedure
-from app.tests import data_generator
+from app.tests import constants
 from app.util.filter import like_all
+
+
+@application.before_first_request
+def before_first_request():
+    initalise.initalise(application)
 
 
 @login.user_loader
@@ -49,8 +53,8 @@ def login():
     form = LoginForm()
 
     if application.config.get('DEFAULT_TEST_ACCOUNT_LOGIN'):
-        form.username.data = data_generator.TEST_ACCOUNT_EMAIL
-        form.password.data = data_generator.TEST_ACCOUNT_PASSWORD
+        form.username.data = constants.TEST_ACCOUNT_EMAIL
+        form.password.data = constants.TEST_ACCOUNT_PASSWORD
 
     if form.validate_on_submit():
         user = db.session.query(User).filter_by(email=form.username.data).first()
@@ -81,6 +85,7 @@ def user_self():
 def user(id):
     user = db.session.query(User).filter(User.id == id).first()
     form = UserEditForm(obj=user)
+    form.hospital_id.choices = _hospital_id_choices(include_empty=True)
 
     if form.validate_on_submit():
         if not current_user.check_password(form.current_password.data):
@@ -115,6 +120,7 @@ def user(id):
 def user_create():
     user = User()
     form = UserEditForm(obj=user)
+    form.hospital_id.choices = _hospital_id_choices(include_empty=True)
 
     if form.validate_on_submit():
         user.name = form.name.data
@@ -150,7 +156,7 @@ def patient_search():
     if form.validate_on_submit():
         f = like_all({
             Patient.name: form.name.data,
-            Patient.email: form.email.data,
+            Patient.national_id: form.national_id.data,
             Patient.gender: form.gender.data,
             Patient.phone: form.phone.data,
             Patient.address: form.address.data,
@@ -176,7 +182,7 @@ def patient_create():
 
     if form.validate_on_submit():
         patient.name = form.name.data
-        patient.email = form.email.data
+        patient.national_id = form.national_id.data
         patient.hospital_id = form.hospital_id.data
         patient.gender = form.gender.data
         patient.phone1 = form.phone.data
@@ -188,6 +194,10 @@ def patient_create():
         db.session.add(patient)
         db.session.commit()
         flash('New patient details for {} have been registered.'.format(patient.name))
+
+        if form.next_action.data == 'CreateEpisode':
+            return redirect(url_for('episode_create', patient_id=patient.id))
+
         return redirect(url_for('patient', id=patient.id))
 
     return render_template('patient.html', title='Register New Patient', form=form, episodes=episodes)
@@ -204,7 +214,7 @@ def patient(id):
 
     if form.validate_on_submit():
         patient.name = form.name.data
-        patient.email = form.email.data
+        patient.national_id = form.national_id.data
         patient.hospital_id = form.hospital_id.data
         patient.gender = form.gender.data
         patient.phone1 = form.phone.data
@@ -214,6 +224,10 @@ def patient(id):
         db.session.commit()
 
         flash('Patient details have been updated.')
+
+        if form.next_action.data == 'CreateEpisode':
+            return redirect(url_for('episode_create', id=patient.id))
+
         return redirect(url_for('patient', id=patient.id))
 
     return render_template('patient.html', title='Patient Details', form=form, episodes=episodes)
@@ -245,6 +259,10 @@ def episode(id):
         db.session.commit()
 
         flash('Episode details have been updated.')
+
+        if form.next_action.data == 'RecordSurgery':
+            return redirect(url_for('surgery_create', episode_id=episode.id))
+
         return redirect(url_for('episode', id=episode.id))
 
     return render_template('episode.html', title='Episode Details', form=form, episode=episode, edit_disabled=False)
@@ -275,19 +293,25 @@ def episode_search():
                                title='Episode Search',
                                form=form,
                                results=episodes,
-                               edit_disabled=True)
+                               edit_disabled=False)
 
-    return render_template('episode_search.html', title='Episode Search', form=form, edit_disabled=True)
+    return render_template('episode_search.html', title='Episode Search', form=form, edit_disabled=False)
 
 
 @application.route('/episode_create', methods=['GET', 'POST'])
+@application.route('/episode_create/<int:patient_id>', methods=['GET', 'POST'])
 @login_required
-def episode_create():
+def episode_create(patient_id=None):
     episode = Episode()
     form = EpisodeEditForm(obj=episode)
     form.hospital_id.choices = _hospital_id_choices()
     form.patient_id.choices = _patient_id_choices()
     form.attendee_id.choices = _attendee_id_choices()
+
+    form.date.data = datetime.today()
+
+    if patient_id:
+        form.patient_id.data = str(patient_id)
 
     if form.validate_on_submit():
         episode.episode_type = form.episode_type.data
@@ -306,6 +330,10 @@ def episode_create():
         db.session.commit()
 
         flash('Episode details have been recorded.')
+
+        if form.next_action.data == 'RecordSurgery':
+            return redirect(url_for('surgery_create', episode_id=episode.id))
+
         return redirect(url_for('episode', id=episode.id))
 
     return render_template('episode.html', title='Record Episode Details',
@@ -453,8 +481,7 @@ def admin():
 
     if form.validate_on_submit():
         command = form.command.data
-        response = admin_command.execute(application, command)
-        return render_template('admin.html', title='Admin Console', form=form, response=response)
+        return render_template('admin.html', title='Admin Console', form=form, response=command)
 
     return render_template('admin.html', title='Admin Console', form=form, response='Waiting...')
 

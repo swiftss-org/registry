@@ -1,11 +1,3 @@
-document.addEventListener("DOMContentLoaded", function(event) {
-  $('#date').datepicker({
-    format: "yyyy-mm-dd",
-    defaultDate: 0,
-    currentText: "Today",
-  });
-});
-
 document.getElementById("submit").addEventListener("click", function() {
     document.getElementById("attendees").value = attendeeTableToJSON()
 });

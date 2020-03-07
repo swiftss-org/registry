@@ -28,7 +28,7 @@ def _patient_as_dict(patient):
         'gender': patient.gender,
         'birth_year': patient.birth_year,
         'phone': patient.phone,
-        'email': patient.email,
+        'national_id': patient.national_id,
         'address': patient.address
     }
 

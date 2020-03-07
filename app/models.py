@@ -82,6 +82,10 @@ class User(db.Model, ExtendedBase, UserMixin):
     version_id = Column(Integer, nullable=False)
     name = Column(String(SHORT_TEXT_LENGTH), unique=True, nullable=False)
     email = Column(String(SHORT_TEXT_LENGTH), unique=True, nullable=False)
+
+    hospital_id = Column(ForeignKey('Hospitals.id'), nullable=True)
+    hospital = relationship(Hospital)
+
     active = Column(Boolean, nullable=False, default=True)
     password_hash = Column(String(128), nullable=False)
 
@@ -125,7 +129,7 @@ class Patient(db.Model, ExtendedBase):
     gender = Column(String(1), nullable=False)
     birth_year = Column(Integer(), nullable=True)
     phone = Column(String(20), nullable=True)
-    email = Column(String(SHORT_TEXT_LENGTH), nullable=True)
+    national_id = Column(String(SHORT_TEXT_LENGTH), nullable=True, unique=True)
     address = Column(String(LONG_TEXT_LENGTH), nullable=True)
 
     hospital_id = Column(ForeignKey('Hospitals.id'), nullable=False)

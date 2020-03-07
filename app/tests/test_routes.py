@@ -1,4 +1,4 @@
-from app.tests import data_generator
+from app.tests import data_generator, constants
 
 
 def test_login(flask_client):
@@ -7,12 +7,12 @@ def test_login(flask_client):
     response = login(flask_client, 'bad_email', 'bad_password')
     assert 'Please Sign In' in str(response.data)
 
-    response = login(flask_client, data_generator.TEST_ACCOUNT_EMAIL, data_generator.TEST_ACCOUNT_PASSWORD)
+    response = login(flask_client, constants.TEST_ACCOUNT_EMAIL, constants.TEST_ACCOUNT_PASSWORD)
     assert 'Please Sign In' not in str(response.data)
 
 
 def test_patient_search(flask_client):
-    login(flask_client, data_generator.TEST_ACCOUNT_EMAIL, data_generator.TEST_ACCOUNT_PASSWORD)
+    login(flask_client, constants.TEST_ACCOUNT_EMAIL, constants.TEST_ACCOUNT_PASSWORD)
     response = flask_client.post('/patient_search', data=dict(name='smith', gender=''), follow_redirects=True)
     assert response.status == '200 OK'
     assert 'Smith,' in str(response.data)

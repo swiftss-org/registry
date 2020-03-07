@@ -85,7 +85,7 @@
     </div>
     {{ macros.with_created_by(form) }}
     <p>{{ form.submit(class='btn btn-primary', onclick="$('#spinner').show()") }}
-        <a href="{{ url_for('episode_search') }}" class="btn btn-secondary">Cancel</a>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
         <a href="{{  url_for('episode', id=surgery.episode.id) }}" class="btn btn-secondary">Show Episode</a>
     </p>
 </form>

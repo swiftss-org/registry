@@ -88,7 +88,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
   $('#spinner').hide();
 
   $('#date').datepicker({
-    format: "yyyy-mm-dd"
+    format: "yyyy-mm-dd",
+    clearBtn: true,
+    todayHighlight: true,
+    autoclose: true,
   });
 });
 

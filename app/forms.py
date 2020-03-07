@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, \
     HiddenField
 from wtforms.ext.dateutil.fields import DateField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Optional
 
 from app import strtobool
 from app.models import EpisodeType, Cepod, Side, Type
@@ -66,6 +66,7 @@ class LoginForm(FlaskForm):
 class UserForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired()])
+    hospital_id = SelectField('Hospital')
 
 
 class UserCreateForm(UserForm):
@@ -87,11 +88,12 @@ class UserEditForm(UserForm):
 
 class PatientForm(FlaskForm):
     name = StringField('Name')
-    email = StringField('Email')
+    national_id = StringField('National Id')
     hospital_id = SelectField('Hospital')
     gender = SelectField('Gender', choices=[('', 'Any'), ('M', 'Male'), ('F', 'Female')])
     phone = StringField('Phone #')
     address = TextAreaField('Address')
+    next_action = HiddenField('NextAction')
     created_by = HiddenField('Created By')
     created_at = HiddenField('Created At')
     updated_by = HiddenField('Updated By')
@@ -107,7 +109,6 @@ class PatientEditForm(PatientForm):
 
 
 class EpisodeForm(FlaskForm):
-    date = DateField('Date', default=datetime.now())
     patient_id = SelectField('Patient')
     hospital_id = SelectField('Hospital')
     surgery_id = HiddenField('Surgery')
@@ -120,8 +121,11 @@ class EpisodeForm(FlaskForm):
     attendee_id = SelectField('Attendee')
     attendees = HiddenField('Attendees')
 
+    next_action = HiddenField('NextAction')
+
 
 class EpisodeEditForm(EpisodeForm):
+    date = DateField('Date', default=datetime.now())
     episode_type = SelectField('Episode Type',
                                choices=choice_for_enum(EpisodeType, include_blank=False),
                                coerce=coerce_for_enum(EpisodeType))
@@ -129,6 +133,7 @@ class EpisodeEditForm(EpisodeForm):
 
 
 class EpisodeSearchForm(EpisodeForm):
+    date = DateField('Date')
     episode_type = SelectField('Episode Type',
                                choices=choice_for_enum(EpisodeType, include_blank=True),
                                coerce=coerce_for_enum(EpisodeType))
@@ -141,7 +146,7 @@ class SurgeryForm(FlaskForm):
                         choices=choice_for_enum(Cepod, include_blank=False),
                         coerce=coerce_for_enum(Cepod))
 
-    date_of_discharge = DateField('Date')
+    date_of_discharge = DateField('Date of Discharge', default=None, validators=(Optional(),))
     side = SelectField('Side',
                        choices=choice_for_enum(Side, include_blank=False),
                        coerce=coerce_for_enum(Side))
@@ -156,7 +161,7 @@ class SurgeryForm(FlaskForm):
     antibiotics = TextAreaField('Antibiotics')
     comments = TextAreaField('Comments')
 
-    opd_rv_date = DateField('RV Date')
+    opd_rv_date = DateField('RV Date', default=None, validators=(Optional(),))
     opd_pain = StringField('Pain')
     opd_numbness = StringField('Numbness')
     opd_infection = StringField('Infection')

@@ -42,10 +42,7 @@
         </div>
     </div>
 </div>
-<script>
-document.addEventListener("DOMContentLoaded", function(event) {
-  $('#spinner').hide();
-});
-
-</script>
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('static', filename='js/patient.js') }}"></script>
 {% endblock %}
