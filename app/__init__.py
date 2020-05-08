@@ -24,9 +24,10 @@ def create_app(unit_test=False):
 
     app = Flask(__name__, instance_relative_config=False)
 
-    if 'RDS_URL' in os.environ:
+    if unit_test:
+        database_url = 'sqlite://'
+    elif 'RDS_URL' in os.environ:
         database_url = os.environ['RDS_URL']
-
     elif 'RDS_HOSTNAME' in os.environ:
         DATABASE = {
             'NAME': os.environ['RDS_DB_NAME'],
@@ -40,7 +41,7 @@ def create_app(unit_test=False):
     else:
         database_url = 'sqlite:///' + os.path.join(tempfile.gettempdir(), 'registry.db')
 
-    logging.info('Initalising SQLAlchmeny with database URL {}'.format(database_url))
+    logging.info('Initalising SQLAlchemy with database URL {}'.format(database_url))
 
     app.config.from_mapping(
         SECRET_KEY=os.environ.get('SECRET_KEY') or pwd_generator.password(),

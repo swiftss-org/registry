@@ -1,0 +1,151 @@
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.discharge_date.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.discharge_date(class='form-control') }}
+                {{ macros.with_errors(form.discharge_date) }}
+            </div>
+        </div>
+    </fieldset>
+    <hr/>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.cepod.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.cepod(class='form-control') }}
+                {{ macros.with_errors(form.cepod) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.occurrence.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.occurrence(class='form-control') }}
+                {{ macros.with_errors(form.occurrence) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.hernia_type.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.hernia_type(class='form-control') }}
+                {{ macros.with_errors(form.hernia_type) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.complexity.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.complexity(class='form-control') }}
+                {{ macros.with_errors(form.complexity) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.mesh_type.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.mesh_type(class='form-control') }}
+                {{ macros.with_errors(form.mesh_type) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.anaesthetic_type.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.anaesthetic_type(class='form-control') }}
+                {{ macros.with_errors(form.anaesthetic_type) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.diathermy_used.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.diathermy_used(class='form-control') }}
+                {{ macros.with_errors(form.diathermy_used) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.primary_surgeon_id.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.primary_surgeon_id(class='form-control') }}
+                {{ macros.with_errors(form.primary_surgeon_id) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.secondary_surgeon_id.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.secondary_surgeon_id(class='form-control') }}
+                {{ macros.with_errors(form.secondary_surgeon_id) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.tertiary_surgeon_id.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.tertiary_surgeon_id(class='form-control') }}
+                {{ macros.with_errors(form.tertiary_surgeon_id) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.additional_procedure.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.additional_procedure(class='form-control') }}
+                {{ macros.with_errors(form.additional_procedure) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.complications.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.complications(class='form-control') }}
+                {{ macros.with_errors(form.complications) }}
+            </div>
+        </div>
+    </fieldset>
+    {{ macros.with_created_by(form) }}
+    <p>{{ form.submit(class='btn btn-primary', onclick="$('#spinner').show()") }}
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+    </p>
+</form>

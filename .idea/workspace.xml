@@ -2,19 +2,73 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dd36aa8a-4b17-47b5-a486-104868436d7a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/templates/forms/patient_search_form.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/tests/routes/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/tests/routes/test_patient.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/base_data.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/route_helper/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/route_helper/choices.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/route_helper/event_helper.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/route_helper/patient_helper.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/static/js/event.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/static/js/followup.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/static/js/typeahead.js/bloodhound.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/static/js/typeahead.js/bloodhound.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/static/js/typeahead.js/typeahead.bundle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/static/js/typeahead.js/typeahead.bundle.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/static/js/typeahead.js/typeahead.jquery.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/static/js/typeahead.js/typeahead.jquery.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/static/typeahead.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/templates/error.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/templates/event_card.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/templates/forms/event_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/templates/forms/followup_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/tests/test_base_data.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/tests/test_data.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/util/form_utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/util/tests/test_strtobool.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/thmr.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/thmr.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/admin/admin_command.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/admin/admin_command.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/attendees_parser.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dao/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/old_forms.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dao/dao.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dao/tests/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/old_routes.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dao/tests/test_dao.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/initalise.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/initalise.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/reporting.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/restful.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/util/restful.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/static/grid.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/static/js/episode.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/static/js/patient.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/js/patient.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/static/js/surgery.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/js/inguinal_mesh_hernia_repair.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/episode.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/followup.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/episode_search.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/episode_search.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/templates/forms/episode_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/forms/episode_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/forms/patient_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/forms/patient_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/forms/surgery_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/forms/inguinal_mesh_hernia_repair_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/forms/user_edit_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/forms/user_edit_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/templates/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/patient.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/patient.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/templates/patient_search.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/patient_search.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/surgery.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/inguinal_mesh_hernia_repair.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tests/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/conftest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/data_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/data_generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/test_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/routes/test_login.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/constants.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests/data_generator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests/names.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/names.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests/test_attendees_parser.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests/test_models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests/test_reporting.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests/test_routes.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/util/collection_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/util/collection_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/util/filter.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/util/filter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/util/strtobool.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/util/strtobool.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,10 +79,16 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="paul_dev" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1YRMy3XrYHF6y9Xa7VEI4nUEqNQ" />
@@ -39,21 +99,37 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/tests/routes" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/static/js" />
+    <property name="settings.editor.selected.configurable" value="PyConsoleConfigurable.Python Console" />
+    <property name="settings.editor.splitter.proportion" value="0.24949084" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;&#10;# Imports for Registry&#10;from app import create_app&#10;import app.initalise as initalise&#10;&#10;application = create_app()&#10;initalise.initalise(application)&#10;&#10;import app.models as models&#10;import app.routes as routes" module-name="thmr" is-module-sdk="true" working-directory="$PROJECT_DIR$">
+        <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;&#10;# Imports for Registry&#10;from app import create_app&#10;import app.initalise as initalise&#10;&#10;application = create_app()&#10;initalise.initalise(application)&#10;&#10;import app.models as models&#10;import app.routes as routes" />
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="thmr" />
+        <option name="myWorkingDirectory" value="$PROJECT_DIR$" />
+      </console-settings>
+    </option>
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\pauls\project\registry\app\route_helper" />
+      <recent name="C:\Users\pauls\project\registry\app" />
+      <recent name="C:\Users\pauls\project\registry\app\util" />
       <recent name="C:\Users\pauls\project\thmr\app\tests\routes" />
       <recent name="C:\Users\pauls\project\thmr\app\static\js" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\pauls\project\registry\app\static\js" />
+      <recent name="C:\Users\pauls\project\registry\app\templates\forms" />
+      <recent name="C:\Users\pauls\project\registry\app\templates" />
       <recent name="C:\Users\pauls\project\thmr\app\tests\routes" />
       <recent name="C:\Users\pauls\project\thmr\app\templates\forms" />
-      <recent name="C:\Users\pauls\project\thmr\app\templates" />
-      <recent name="C:\Users\pauls\project\thmr\app\static\js" />
     </key>
   </component>
   <component name="RunManager" selected="Python.Run Flask Locally (and reset db)">
@@ -89,9 +165,9 @@
         <env name="ADMIN_RESET_DB" value="True" />
         <env name="ADMIN_GENERATE_DATA" value="True" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\pauls\project\thmr\venv\Scripts\python.exe" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run.py" />
@@ -125,7 +201,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest for app.tests.routes.test_patient.test_patient" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="pytest for test_login.test_login" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="thmr" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -134,58 +210,26 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_keywords" value="&quot;test_patient_search&quot;" />
+      <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;app.tests.routes.test_patient.test_patient&quot;" />
+      <option name="_new_target" value="&quot;test_login.test_login&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest for test_patient.test_patient" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="pytest in test_base_data.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="thmr" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/app/tests/routes" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/app/tests" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_patient.test_patient&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="pytest in routes" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <module name="thmr" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/app/tests/routes" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/app/tests/routes&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="pytest in test_attendees_parser.py" type="tests" factoryName="py.test" nameIsGenerated="true">
-      <module name="thmr" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="C:\Users\pauls\project\thmr\venv\Scripts\python.exe" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/app/tests/test_attendees_parser.py&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/app/tests/test_base_data.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
@@ -221,24 +265,39 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="pytest in tests" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="thmr" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/app/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/app/tests&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
     <list>
+      <item itemvalue="Python.Reset ES DB" />
       <item itemvalue="Python.Run Flask Locally (and reset db)" />
       <item itemvalue="Python.Run Flask Locally (w/ empty db)" />
-      <item itemvalue="Python.Reset ES DB" />
-      <item itemvalue="Python tests.pytest in test_attendees_parser.py" />
-      <item itemvalue="Python tests.pytest in routes" />
-      <item itemvalue="Python tests.pytest in test_patient.py" />
-      <item itemvalue="Python tests.pytest for app.tests.routes.test_patient.test_patient" />
-      <item itemvalue="Python tests.pytest for test_patient.test_patient" />
       <item itemvalue="Python tests.pytest in test_login.py" />
+      <item itemvalue="Python tests.pytest in test_patient.py" />
+      <item itemvalue="Python tests.pytest for test_login.test_login" />
+      <item itemvalue="Python tests.pytest in tests" />
+      <item itemvalue="Python tests.pytest in test_base_data.py" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.pytest in routes" />
-        <item itemvalue="Python tests.pytest in test_login.py" />
+        <item itemvalue="Python tests.pytest in test_base_data.py" />
+        <item itemvalue="Python tests.pytest in tests" />
         <item itemvalue="Python tests.pytest in test_patient.py" />
-        <item itemvalue="Python tests.pytest for test_patient.test_patient" />
-        <item itemvalue="Python tests.pytest for app.tests.routes.test_patient.test_patient" />
+        <item itemvalue="Python tests.pytest for test_login.test_login" />
+        <item itemvalue="Python tests.pytest in test_login.py" />
       </list>
     </recent_temporary>
   </component>
@@ -256,78 +315,102 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="734" y="355" width="1092" height="700" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1583686115665">
+    <state x="734" y="355" width="1092" height="700" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588500470504">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="734" y="355" width="1092" height="700" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1583686115665" />
-    <state x="489" y="375" width="1354" height="594" key="#xdebugger.evaluate" timestamp="1583690564670">
+    <state x="734" y="355" width="1092" height="700" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1588500470504" />
+    <state x="114" y="57" width="2376" height="1290" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1588438041847">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="489" y="375" width="1354" height="594" key="#xdebugger.evaluate/0.0.2560.1400@0.0.2560.1400" timestamp="1583690564670" />
+    <state x="114" y="57" width="2376" height="1290" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1588438041847" />
+    <state x="1010" y="447" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1588434294937">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1010" y="447" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1588434294937" />
+    <state x="1049" y="427" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog" timestamp="1588518221213">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1049" y="427" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1588518221213" />
+    <state x="489" y="375" width="1354" height="594" key="#xdebugger.evaluate" timestamp="1588501432225">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="489" y="375" width="1354" height="594" key="#xdebugger.evaluate/0.0.2560.1400@0.0.2560.1400" timestamp="1588501432225" />
     <state x="92" y="92" width="2376" height="1216" key="DiffContextDialog" timestamp="1583692823690">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="92" y="92" width="2376" height="1216" key="DiffContextDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1583692823690" />
-    <state x="1014" y="462" key="EnvironmentVariablesDialog" timestamp="1583686114875">
+    <state x="1014" y="462" width="1199" height="489" key="EnvironmentVariablesDialog" timestamp="1588500469954">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="1014" y="462" key="EnvironmentVariablesDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1583686114875" />
-    <state x="1060" y="455" key="FileChooserDialogImpl" timestamp="1583572295854">
+    <state x="1014" y="462" width="1199" height="489" key="EnvironmentVariablesDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1588500469954" />
+    <state x="1060" y="455" key="FileChooserDialogImpl" timestamp="1588518220621">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="1060" y="455" key="FileChooserDialogImpl/0.0.2560.1400@0.0.2560.1400" timestamp="1583572295854" />
-    <state width="2539" height="401" key="GridCell.Tab.0.bottom" timestamp="1588232165717">
+    <state x="1060" y="455" key="FileChooserDialogImpl/0.0.2560.1400@0.0.2560.1400" timestamp="1588518220621" />
+    <state width="2539" height="281" key="GridCell.Tab.0.bottom" timestamp="1588951432269">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2539" height="401" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1588232165717" />
-    <state width="2539" height="401" key="GridCell.Tab.0.center" timestamp="1588232165716">
+    <state width="2539" height="281" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1588951432269" />
+    <state width="2539" height="281" key="GridCell.Tab.0.center" timestamp="1588951432269">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2539" height="401" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1588232165716" />
-    <state width="2539" height="401" key="GridCell.Tab.0.left" timestamp="1588232165716">
+    <state width="2539" height="281" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1588951432269" />
+    <state width="2539" height="281" key="GridCell.Tab.0.left" timestamp="1588951432269">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2539" height="401" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1588232165716" />
-    <state width="2539" height="401" key="GridCell.Tab.0.right" timestamp="1588232165716">
+    <state width="2539" height="281" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1588951432269" />
+    <state width="2539" height="281" key="GridCell.Tab.0.right" timestamp="1588951432269">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2539" height="401" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1588232165716" />
-    <state width="2539" height="492" key="GridCell.Tab.1.bottom" timestamp="1583693848088">
+    <state width="2539" height="281" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1588951432269" />
+    <state width="2539" height="281" key="GridCell.Tab.1.bottom" timestamp="1588951432175">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2539" height="492" key="GridCell.Tab.1.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1583693848088" />
-    <state width="2539" height="492" key="GridCell.Tab.1.center" timestamp="1583693848088">
+    <state width="2539" height="281" key="GridCell.Tab.1.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1588951432175" />
+    <state width="2539" height="281" key="GridCell.Tab.1.center" timestamp="1588951432175">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2539" height="492" key="GridCell.Tab.1.center/0.0.2560.1400@0.0.2560.1400" timestamp="1583693848088" />
-    <state width="2539" height="492" key="GridCell.Tab.1.left" timestamp="1583693848088">
+    <state width="2539" height="281" key="GridCell.Tab.1.center/0.0.2560.1400@0.0.2560.1400" timestamp="1588951432175" />
+    <state width="2539" height="281" key="GridCell.Tab.1.left" timestamp="1588951432174">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2539" height="492" key="GridCell.Tab.1.left/0.0.2560.1400@0.0.2560.1400" timestamp="1583693848088" />
-    <state width="2539" height="492" key="GridCell.Tab.1.right" timestamp="1583693848088">
+    <state width="2539" height="281" key="GridCell.Tab.1.left/0.0.2560.1400@0.0.2560.1400" timestamp="1588951432174" />
+    <state width="2539" height="281" key="GridCell.Tab.1.right" timestamp="1588951432175">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2539" height="492" key="GridCell.Tab.1.right/0.0.2560.1400@0.0.2560.1400" timestamp="1583693848088" />
-    <state x="781" y="342" key="SettingsEditor" timestamp="1582965512615">
+    <state width="2539" height="281" key="GridCell.Tab.1.right/0.0.2560.1400@0.0.2560.1400" timestamp="1588951432175" />
+    <state x="813" y="247" key="SettingsEditor" timestamp="1588499766442">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="781" y="342" key="SettingsEditor/0.0.2560.1400@0.0.2560.1400" timestamp="1582965512615" />
-    <state width="1288" height="708" key="XDebugger.FullValuePopup" timestamp="1583690657526">
+    <state x="813" y="247" key="SettingsEditor/0.0.2560.1400@0.0.2560.1400" timestamp="1588499766442" />
+    <state width="1288" height="708" key="XDebugger.FullValuePopup" timestamp="1588498919717">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="1288" height="708" key="XDebugger.FullValuePopup/0.0.2560.1400@0.0.2560.1400" timestamp="1583690657526" />
+    <state width="1288" height="708" key="XDebugger.FullValuePopup/0.0.2560.1400@0.0.2560.1400" timestamp="1588498919717" />
+    <state x="92" y="92" width="2376" height="1216" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1588922960296">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="92" y="92" width="2376" height="1216" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1588922960296" />
     <state x="851" y="436" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1582901477009">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="851" y="436" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.2560.1400@0.0.2560.1400" timestamp="1582901477009" />
-    <state x="996" y="306" width="737" height="975" key="find.popup" timestamp="1583591708221">
+    <state x="0" y="398" width="1902" height="958" key="dock-window-1" timestamp="1588504506101">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="996" y="306" width="737" height="975" key="find.popup/0.0.2560.1400@0.0.2560.1400" timestamp="1583591708221" />
-    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup" timestamp="1588228834739">
+    <state x="0" y="398" width="1902" height="958" key="dock-window-1/0.0.2560.1400@0.0.2560.1400" timestamp="1588504506101" />
+    <state x="996" y="306" width="737" height="975" key="find.popup" timestamp="1588944301265">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup/0.0.2560.1400@0.0.2560.1400" timestamp="1588228834739" />
+    <state x="996" y="306" width="737" height="975" key="find.popup/0.0.2560.1400@0.0.2560.1400" timestamp="1588944301265" />
+    <state x="1123" y="472" key="refactoring.ChangeSignatureDialog" timestamp="1588436924660">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1123" y="472" key="refactoring.ChangeSignatureDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1588436924660" />
+    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup" timestamp="1588951352343">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup/0.0.2560.1400@0.0.2560.1400" timestamp="1588951352343" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -339,5 +422,10 @@
         </breakpoint>
       </default-breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="tests">
+        <watch expression="form.username.data" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

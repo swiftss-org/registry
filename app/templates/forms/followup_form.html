@@ -1,0 +1,130 @@
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    {% include 'forms/event_form.html' %}
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.attendee_id.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.attendee_id(class='form-control') }}
+                {{ macros.with_errors(form.attendee_id) }}
+            </div>
+        </div>
+    </fieldset>
+    <hr/>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.pain.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.pain(class='form-control') }}
+                {{ macros.with_errors(form.pain) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset id='pain_comments_fieldset' class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.pain_comments.label(class='form-check-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.pain_comments(class='form-check-input') }}
+                {{ macros.with_errors(form.pain_comments) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.mesh_awareness.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.mesh_awareness(class='form-control') }}
+                {{ macros.with_errors(form.mesh_awareness) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset id='mesh_awareness_comments_fieldset' class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.mesh_awareness_comments.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.mesh_awareness_comments(class='form-control') }}
+                {{ macros.with_errors(form.mesh_awareness_comments) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.infection.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.infection(class='form-control') }}
+                {{ macros.with_errors(form.infection) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset id='infection_comments_fieldset' class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.infection_comments.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.infection_comments(class='form-control') }}
+                {{ macros.with_errors(form.infection_comments) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.seroma.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.seroma(class='form-control') }}
+                {{ macros.with_errors(form.seroma) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset id='seroma_comments_fieldset' class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.seroma_comments.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.seroma_comments(class='form-control') }}
+                {{ macros.with_errors(form.seroma_comments) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.numbness.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.numbness(class='form-control') }}
+                {{ macros.with_errors(form.numbness) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset id='numbness_comments_fieldset' class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.numbness_comments.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.numbness_comments(class='form-control') }}
+                {{ macros.with_errors(form.numbness_comments) }}
+            </div>
+        </div>
+    </fieldset>
+    {{ macros.with_created_by(form) }}
+    <p>{{ form.submit(class='btn btn-primary', onclick="$('#spinner').show()") }}
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+    </p>
+</form>

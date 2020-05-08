@@ -1,5 +1,5 @@
 # Tanzania Mesh Hernia Registry
-Tanzania Mesh Hernia Registry, thmr, is a mobile-first website and database designed to record and track Mesh Hernia operations in Tanzania. It was built by and for the SWIFTSS charity who are focused on improving the availability and effectiveness of mesh hernia surgery across Tanzania.
+Tanzania Mesh Hernia Registry, is a mobile-first website and database designed to record and track Mesh Hernia operations in Tanzania. It was built by and for the SWIFTSS charity who are focused on improving the availability and effectiveness of mesh hernia surgery across Tanzania.
 
 The code is available under a GPL v3 license on git clone https://github.com/swiftss-org/thmr. Issues should be reported to https://github.com/swiftss-org/thmr/issues and project tracking can also be found at https://github.com/swiftss-org/thmr/projects/1.  
 

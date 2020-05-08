@@ -7,6 +7,7 @@ def coerce_to_list(l):
     else:
         return [l]
 
+
 def append_dicts(base, d):
     for k, v in d.items():
         base[k] = coerce_to_list(base[k]) + [v]

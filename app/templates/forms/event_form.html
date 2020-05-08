@@ -1,0 +1,44 @@
+<fieldset class="form-group row">
+    <div class="row">
+        <div class="col-2">
+            {{ form.date.label(class='col-form-label') }}
+        </div>
+        <div class="col-4">
+            {{ form.date(class='form-control') }}
+            {{ macros.with_errors(form.date) }}
+        </div>
+    </div>
+</fieldset>
+<fieldset class="form-group row">
+    <div class="row">
+        <div class="col-2">
+            {{ form.patient_id.label(class='col-form-label') }}
+        </div>
+        <div class="col-4">
+            {{ form.patient_id(class='form-control') }}
+            {{ macros.with_errors(form.patient_id) }}
+        </div>
+    </div>
+</fieldset>
+<fieldset class="form-group row">
+    <div class="row">
+        <div class="col-2">
+            {{ form.center_id.label(class='col-form-label') }}
+        </div>
+        <div class="col-4">
+            {{ form.center_id(class='form-control') }}
+            {{ macros.with_errors(form.center_id) }}
+        </div>
+    </div>
+</fieldset>
+<fieldset class="form-group row">
+    <div class="row">
+        <div class="col-2">
+            {{ form.comments.label(class='col-form-label') }}
+        </div>
+        <div class="col-4">
+            {{ form.comments(class='form-control') }}
+            {{ macros.with_errors(form.comments) }}
+        </div>
+    </div>
+</fieldset>

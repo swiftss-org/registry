@@ -51,7 +51,7 @@ class CustomJSONEncoder(json.JSONEncoder):
 
 class CustomJSONDecoder(json.JSONDecoder):
     def __init__(self, *args, **kwargs):
-        json.JSONDecoder.__init__(self, object_hook=self.object_hook) #, *args, **kwargs)
+        json.JSONDecoder.__init__(self, object_hook=self.object_hook)  # , *args, **kwargs)
         self.enum_regex = re.compile(r"^([A-Z][a-zA-Z]*)\.([A-Z][a-zA-Z]*)$")
         self.enum_module = 'app.models'
 

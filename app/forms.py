@@ -1,59 +1,10 @@
-from datetime import datetime
-
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, \
-    HiddenField
-from wtforms.ext.dateutil.fields import DateField
+    HiddenField, IntegerField, RadioField, DateField
 from wtforms.validators import DataRequired, Optional
 
-from app import strtobool
-from app.models import EpisodeType, Cepod, Side, Type
-
-
-def choice_for_enum(enum, include_blank=False):
-    l = [(e, e.name) for e in enum]
-    if include_blank:
-        l.insert(0, ('', '(Any)'))
-    return l
-
-
-def coerce_for_enum(enum):
-    def coerce(name):
-        if name is None or str(name) == '':
-            return None
-
-        if isinstance(name, enum):
-            return name
-
-        try:
-            id = int(name)
-            try:
-                return enum(id)
-            except KeyError:
-                raise ValueError(name)
-        except ValueError:
-            try:
-                if '.' in name:
-                    name = name[name.find('.') + 1:]
-                return enum[name]
-            except KeyError:
-                raise ValueError(name)
-
-    return coerce
-
-
-def coerce_for_bool():
-    def coerce(name):
-        if isinstance(name, bool):
-            return name
-
-        return strtobool(name)
-
-    return coerce
-
-
-def choice_for_bool():
-    return [(True, 'True'), (False, 'False')]
+from app.models import Cepod, Side, Occurrence, InguinalHerniaType, Complexity, MeshType, AnestheticType, Pain
+from app.util.form_utils import choice_for_bool, coerce_for_bool, choice_for_enum, coerce_for_enum
 
 
 class LoginForm(FlaskForm):
@@ -66,7 +17,7 @@ class LoginForm(FlaskForm):
 class UserForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired()])
-    hospital_id = SelectField('Hospital')
+    center_id = SelectField('Center')
 
 
 class UserCreateForm(UserForm):
@@ -86,95 +37,117 @@ class UserEditForm(UserForm):
     submit = SubmitField('Save Changes')
 
 
-class PatientForm(FlaskForm):
+class PatientEditForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    national_id = StringField('National Id')
+    birth_year = IntegerField('Year of Birth')
+    age = IntegerField('Age')
+    center_id = SelectField('Center', validators=[DataRequired()])
+    gender = SelectField('Gender', choices=[('M', 'Male'), ('F', 'Female')], validators=[DataRequired()])
+    phone = StringField('Phone #')
+    address = TextAreaField('Address (e.g. Village, District)')
+    next_action = HiddenField('NextAction')
+    created_by = HiddenField('Created By')
+    created_at = HiddenField('Created At')
+    updated_by = HiddenField('Updated By')
+    updated_at = HiddenField('Updated At')
+    submit = SubmitField('Save Changes')
+
+
+class PatientSearchForm(FlaskForm):
     name = StringField('Name')
     national_id = StringField('National Id')
-    hospital_id = SelectField('Hospital')
+    birth_year = IntegerField('Year of Birth', validators=[Optional()])
+    age = IntegerField('Age', validators=[Optional()])
+    center_id = SelectField('Center')
     gender = SelectField('Gender', choices=[('', 'Any'), ('M', 'Male'), ('F', 'Female')])
     phone = StringField('Phone #')
-    address = TextAreaField('Address')
+    address = TextAreaField('Address (e.g. Village, District)')
     next_action = HiddenField('NextAction')
     created_by = HiddenField('Created By')
     created_at = HiddenField('Created At')
     updated_by = HiddenField('Updated By')
     updated_at = HiddenField('Updated At')
-
-
-class PatientSearchForm(PatientForm):
     submit = SubmitField('Search')
 
 
-class PatientEditForm(PatientForm):
-    submit = SubmitField('Save Changes')
+class EventForm(FlaskForm):
+    id = HiddenField('id')
+    version = HiddenField('version')
 
-
-class EpisodeForm(FlaskForm):
-    patient_id = SelectField('Patient')
-    hospital_id = SelectField('Hospital')
-    surgery_id = HiddenField('Surgery')
-    comments = TextAreaField('Comments')
-    created_by = HiddenField('Created By')
-    created_at = HiddenField('Created At')
-    updated_by = HiddenField('Updated By')
-    updated_at = HiddenField('Updated At')
-
-    attendee_id = SelectField('Attendee')
-    attendees = HiddenField('Attendees')
-
-    next_action = HiddenField('NextAction')
-
-
-class EpisodeEditForm(EpisodeForm):
-    date = DateField('Date', default=datetime.now())
-    episode_type = SelectField('Episode Type',
-                               choices=choice_for_enum(EpisodeType, include_blank=False),
-                               coerce=coerce_for_enum(EpisodeType))
-    submit = SubmitField('Save Changes')
-
-
-class EpisodeSearchForm(EpisodeForm):
+    type = HiddenField('Type')
     date = DateField('Date')
-    episode_type = SelectField('Episode Type',
-                               choices=choice_for_enum(EpisodeType, include_blank=True),
-                               coerce=coerce_for_enum(EpisodeType))
-    submit = SubmitField('Search')
+
+    patient_id = SelectField('Patient')
+    center_id = SelectField('Center')
+    comments = TextAreaField('Comments')
+
+    created_by = HiddenField('Created By')
+    created_at = HiddenField('Created At')
+    updated_by = HiddenField('Updated By')
+    updated_at = HiddenField('Updated At')
+    submit = SubmitField('Save Changes')
 
 
-class SurgeryForm(FlaskForm):
-    procedure_id = SelectField('Procedure')
+class FollowupForm(EventForm):
+    attendee_id = SelectField('Attendee', validators=[DataRequired()])
+
+    pain = SelectField('Pain',
+                       choices=choice_for_enum(Pain, include_blank=False),
+                       coerce=coerce_for_enum(Pain),
+                       validators=[DataRequired()])
+    pain_comments = StringField('Pain Description', validators=[Optional()])
+
+    mesh_awareness = BooleanField('Aware of Mesh?', validators=[DataRequired()])
+    mesh_awareness_comments = StringField('Mesh Awareness Description', validators=[Optional()])
+
+    infection = BooleanField('Infection?', validators=[DataRequired()])
+    infection_comments = StringField('Infection Description', validators=[Optional()])
+
+    seroma = BooleanField('Seroma?', validators=[DataRequired()])
+    seroma_comments = StringField('Seroma Description', validators=[Optional()])
+
+    numbness = BooleanField('Numbness?', validators=[DataRequired()])
+    numbness_comments = StringField('Numbness Description', validators=[Optional()])
+
+
+class InguinalMeshHerniaRepairForm(EventForm):
+    discharge_date = StringField('Discharge Date')
+
     cepod = SelectField('CEPOD',
                         choices=choice_for_enum(Cepod, include_blank=False),
-                        coerce=coerce_for_enum(Cepod))
-
-    date_of_discharge = DateField('Date of Discharge', default=None, validators=(Optional(),))
+                        coerce=coerce_for_enum(Cepod),
+                        validators=[DataRequired()])
     side = SelectField('Side',
                        choices=choice_for_enum(Side, include_blank=False),
-                       coerce=coerce_for_enum(Side))
-    primary = SelectField('Primary',
-                          choices=choice_for_bool(),
-                          coerce=coerce_for_bool())
-    type = SelectField('Type',
-                       choices=choice_for_enum(Type, include_blank=False),
-                       coerce=coerce_for_enum(Type))
+                       coerce=coerce_for_enum(Side),
+                       validators=[DataRequired()])
+    occurrence = SelectField('Occurrence',
+                             choices=choice_for_enum(Occurrence, include_blank=False),
+                             coerce=coerce_for_enum(Occurrence),
+                             validators=[DataRequired()])
+    hernia_type = SelectField('Hernia Type',
+                              choices=choice_for_enum(InguinalHerniaType, include_blank=False),
+                              coerce=coerce_for_enum(InguinalHerniaType),
+                              validators=[DataRequired()])
+    complexity = SelectField('Complexity',
+                             choices=choice_for_enum(Complexity, include_blank=False),
+                             coerce=coerce_for_enum(Complexity),
+                             validators=[DataRequired()])
 
-    additional_procedure = TextAreaField('Additional Procedure')
-    antibiotics = TextAreaField('Antibiotics')
-    comments = TextAreaField('Comments')
+    mesh_type = StringField('Mesh Type', validators=[DataRequired()])
 
-    opd_rv_date = DateField('RV Date', default=None, validators=(Optional(),))
-    opd_pain = StringField('Pain')
-    opd_numbness = StringField('Numbness')
-    opd_infection = StringField('Infection')
-    opd_comments = TextAreaField('Comments')
+    anaesthetic_type = SelectField('Anaesthetic Type',
+                                   choices=choice_for_enum(AnestheticType, include_blank=False),
+                                   coerce=coerce_for_enum(AnestheticType),
+                                   validators=[DataRequired()])
 
-    created_by = HiddenField('Created By')
-    created_at = HiddenField('Created At')
-    updated_by = HiddenField('Updated By')
-    updated_at = HiddenField('Updated At')
+    anaesthetic = StringField('Anaesthetic', validators=[DataRequired()])
+    diathermy_used = BooleanField('Diathermy Used?', validators=[DataRequired()])
 
-    submit = SubmitField('Save Changes')
+    primary_surgeon_id = SelectField('Primary Surgeon', validators=[Optional()])
+    secondary_surgeon_id = SelectField('Secondary Surgeon', validators=[Optional()])
+    tertiary_surgeon_id = SelectField('Tertiary Surgeon', validators=[Optional()])
 
-
-class AdminForm(FlaskForm):
-    command = StringField('Command')
-    execute = SubmitField('Execute')
+    additional_procedure = TextAreaField('Additional Procedure', validators=[Optional()])
+    complications = TextAreaField('Complications', validators=[Optional()])

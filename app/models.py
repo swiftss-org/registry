@@ -23,44 +23,81 @@ class ExtendedBase:
 
 
 class Cepod(enum.Enum):
-    Immediate = 1
-    Urgent = 2
-    Expedited = 3
-    Elective = 4
+    Planned = 1
+    Emergency = 2
 
 
 class Side(enum.Enum):
     Left = 1
     Right = 2
-    NA = 3
 
 
-class Type(enum.Enum):
+class Occurrence(enum.Enum):
+    Primary = 1
+    Recurrent = 2
+    ReRecurrent = 3
+
+
+class InguinalHerniaType(enum.Enum):
     Direct = 1
     Indirect = 2
-    NA = 3
+    # A pantaloon hernia (dual hernia, Romberg hernia or saddle bag hernia) is defined as ipsilateral,
+    # concurrent direct and indirect inguinal hernias.
+    Pantaloon = 3
 
 
-class EpisodeType(enum.Enum):
-    Surgery = 1
-    FollowUp = 2
-    Other = 3
+class Complexity(enum.Enum):
+    Simple = 1
+    Sliding = 2
+    Complicated = 3
 
 
-#
+class Size(enum.Enum):
+    Small = 1
+    Medium = 2
+    Large = 3
+    Massive = 4
+
+
+class Pain(enum.Enum):
+    No_Pain = 1
+    Minimal = 2
+    Mild = 3
+    Moderate = 4
+    Severe = 5
+
+
+class DrugType(enum.Enum):
+    Anesthetic = 1
+    Antibiotic = 2
+
+
+class AnestheticType(enum.Enum):
+    Spinal = 1
+    GA_Ketamine = 2
+    GA_With_Intubation = 3
+    Local = 4
+    Other = 5
+
+
 # This is necessary so that the Custom JSONEncoder/Decoder in restful.py can know which enums to
 # encode or decode.
 #
 KNOWN_ENUMS = {
     'Cepod': Cepod,
     'Side': Side,
-    'Type': Type,
-    'EpisodeType': EpisodeType,
+    'Occurrence': Occurrence,
+    'Type': InguinalHerniaType,
+    'Complexity': Complexity,
+    'Size': Size,
+    'Pain': Pain,
+    'DrugType': DrugType,
+    'AnestheticType': AnestheticType,
 }
 
 
-class Hospital(db.Model, ExtendedBase):
-    __tablename__ = 'Hospitals'
+class Center(db.Model, ExtendedBase):
+    __tablename__ = 'Centers'
 
     id = Column(Integer(), primary_key=True, autoincrement=True)
     version_id = Column(Integer, nullable=False)
@@ -83,8 +120,8 @@ class User(db.Model, ExtendedBase, UserMixin):
     name = Column(String(SHORT_TEXT_LENGTH), unique=True, nullable=False)
     email = Column(String(SHORT_TEXT_LENGTH), unique=True, nullable=False)
 
-    hospital_id = Column(ForeignKey('Hospitals.id'), nullable=True)
-    hospital = relationship(Hospital)
+    center_id = Column(ForeignKey('Centers.id'), nullable=True)
+    center = relationship(Center)
 
     active = Column(Boolean, nullable=False, default=True)
     password_hash = Column(String(128), nullable=False)
@@ -107,19 +144,6 @@ class User(db.Model, ExtendedBase, UserMixin):
         return self.name
 
 
-class EpisodeAttendee(db.Model, ExtendedBase):
-    __tablename__ = 'EpisodeAttendees'
-
-    user_id = Column(ForeignKey('Users.id'), primary_key=True)
-    user = relationship(User)
-
-    episode_id = Column(ForeignKey('Episodes.id'), primary_key=True)
-    comments = Column(String(LONG_TEXT_LENGTH), nullable=False, default='none')
-
-    def __repr__(self):
-        return "{}: [user_id='{}', episode_id='{}']".format(self.__tablename__, self.user_id, self.episode_id)
-
-
 class Patient(db.Model, ExtendedBase):
     __tablename__ = 'Patients'
 
@@ -129,11 +153,11 @@ class Patient(db.Model, ExtendedBase):
     gender = Column(String(1), nullable=False)
     birth_year = Column(Integer(), nullable=True)
     phone = Column(String(20), nullable=True)
-    national_id = Column(String(SHORT_TEXT_LENGTH), nullable=True, unique=True)
+    national_id = Column(String(SHORT_TEXT_LENGTH), nullable=True)
     address = Column(String(LONG_TEXT_LENGTH), nullable=True)
 
-    hospital_id = Column(ForeignKey('Hospitals.id'), nullable=False)
-    hospital = relationship(Hospital)
+    center_id = Column(ForeignKey('Centers.id'), nullable=False)
+    center = relationship(Center)
 
     created_at = Column('created_at', DateTime(), default=datetime.now, nullable=False)
     created_by_id = Column(ForeignKey('Users.id'), nullable=False)
@@ -151,107 +175,60 @@ class Patient(db.Model, ExtendedBase):
         return self.name
 
 
-class Complication(db.Model, ExtendedBase):
-    __tablename__ = 'Complications'
-
-    id = Column('id', Integer(), primary_key=True, autoincrement=True)
-    version_id = Column(Integer, nullable=False)
-
-    episode_id = Column(ForeignKey('Episodes.id'), nullable=False)
-
-    date = Column(Date, nullable=False, default=datetime.today())
-    comments = Column('comments', String(LONG_TEXT_LENGTH))
-
-    __mapper_args__ = {
-        "version_id_col": version_id
-    }
-
-    def __repr__(self):
-        return "{}: [id='{}', name='{}', ...]".format(self.__tablename__, self.id, self.name)
-
-
-class Procedure(db.Model, ExtendedBase):
-    __tablename__ = 'Procedures'
+class MeshType(db.Model, ExtendedBase):
+    __tablename__ = 'MeshTypes'
 
     id = Column('id', Integer(), primary_key=True, autoincrement=True)
     version_id = Column(Integer, nullable=False)
     name = Column('name', String(SHORT_TEXT_LENGTH), nullable=False, unique=True)
 
-    relationship('Surgery', backref=__tablename__)
-
     __mapper_args__ = {
         "version_id_col": version_id
     }
 
     def __repr__(self):
-        return "{}: [id='{}', name='{}', ...]".format(self.__tablename__, self.id, self.name)
+        return "{}: [id='{}', name='{}']".format(self.__tablename__, self.id, self.name)
 
 
-class Surgery(db.Model, ExtendedBase):
-    __tablename__ = 'Surgeries'
-
-    id = Column(Integer(), primary_key=True, autoincrement=True)
-    version_id = Column(Integer, nullable=False)
-
-    cepod = Column(Enum(Cepod), nullable=False)
-    date_of_discharge = Column(Date, nullable=True, default=datetime.today())
-
-    procedure_id = Column(Integer, ForeignKey('Procedures.id'), nullable=False)
-    procedure = relationship(Procedure)
-
-    episode = relationship('Episode', uselist=False)
-
-    side = Column(Enum(Side), nullable=False)
-    primary = Column(Boolean, nullable=False, default=True)
-    type = Column(Enum(Type), nullable=False)
-    additional_procedure = Column(String(LONG_TEXT_LENGTH), nullable=False, default='none')
-    antibiotics = Column(String(LONG_TEXT_LENGTH), nullable=False, default='none')
-    opd_rv_date = Column(Date, nullable=True, default=datetime.today())
-    opd_pain = Column(String(SHORT_TEXT_LENGTH), nullable=False, default='none')
-    opd_numbness = Column(String(SHORT_TEXT_LENGTH), nullable=False, default='none')
-    opd_infection = Column(String(SHORT_TEXT_LENGTH), nullable=False, default='none')
-    opd_comments = Column(String(LONG_TEXT_LENGTH), nullable=False, default='none')
-    comments = Column(String(LONG_TEXT_LENGTH), nullable=False, default='none')
-
-    created_at = Column('created_at', DateTime(), default=datetime.now, nullable=False)
-    created_by_id = Column(ForeignKey('Users.id'), nullable=False)
-    created_by = relationship(User, foreign_keys=[created_by_id])
-
-    updated_at = Column('updated_at', DateTime(), default=datetime.now, onupdate=datetime.now, nullable=False)
-    updated_by_id = Column(ForeignKey('Users.id'), nullable=False)
-    updated_by = relationship(User, foreign_keys=[updated_by_id])
-
-    __mapper_args__ = {
-        "version_id_col": version_id
-    }
-
-    def __repr__(self):
-        return "{}: [id='{}', ...]".format(self.__tablename__, self.id)
-
-
-class Episode(db.Model, ExtendedBase):
-    __tablename__ = 'Episodes'
+class Drug(db.Model, ExtendedBase):
+    __tablename__ = 'Drugs'
 
     id = Column('id', Integer(), primary_key=True, autoincrement=True)
     version_id = Column(Integer, nullable=False)
-    episode_type = Column(Enum(EpisodeType), nullable=False)
+    name = Column('name', String(SHORT_TEXT_LENGTH), nullable=False, unique=True)
+    type = Column(Enum(DrugType), nullable=False)
+
+    __mapper_args__ = {
+        "version_id_col": version_id
+    }
+
+    def __repr__(self):
+        return "{}: [id='{}', name='{}', type='{}']".format(self.__tablename__, self.id, self.name, self.type)
+
+
+class DrugEventAssociation(db.Model, ExtendedBase):
+    __tablename__ = 'DrugEvents'
+
+    event_id = Column(Integer, ForeignKey('Events.id'), primary_key=True)
+    drug_id = Column(Integer, ForeignKey('Drugs.id'), primary_key=True)
+
+    drug = relationship("Drug")
+
+
+class Event(db.Model, ExtendedBase):
+    __tablename__ = 'Events'
+
+    id = Column('id', Integer(), primary_key=True, autoincrement=True)
+    version_id = Column(Integer, nullable=False)
+    type = Column(String, nullable=False)
     date = Column(Date, nullable=False, default=datetime.today())
 
     patient_id = Column(ForeignKey('Patients.id'), nullable=False)
     patient = relationship(Patient)
 
-    hospital_id = Column(ForeignKey('Hospitals.id'), nullable=False)
-    hospital = relationship(Hospital)
+    center_id = Column(ForeignKey('Centers.id'), nullable=False)
+    center = relationship(Center)
 
-    attendees = relationship('EpisodeAttendee',
-                             cascade='all,delete-orphan',
-                             single_parent=True,
-                             backref=backref('roles', cascade='all'))
-
-    surgery_id = Column(ForeignKey('Surgeries.id'), nullable=True)
-    surgery = relationship(Surgery)
-
-    complications = relationship(Complication)
     comments = Column(String(LONG_TEXT_LENGTH), nullable=False, default='none')
 
     created_at = Column('created_at', DateTime(), default=datetime.now, nullable=False)
@@ -263,12 +240,76 @@ class Episode(db.Model, ExtendedBase):
     updated_by = relationship(User, foreign_keys=[updated_by_id])
 
     __mapper_args__ = {
-        "version_id_col": version_id
+        'version_id_col': version_id,
+        'polymorphic_on': type,
     }
 
     def __repr__(self):
-        return "{}: [id='{}', date='{}', patient='{}', hospital='{}', ...]".format(self.__tablename__,
-                                                                                   self.id,
-                                                                                   self.date.isoformat(),
-                                                                                   self.patient_id,
-                                                                                   self.hospital_id)
+        return "{}: [id='{}', type='{}', date='{}', patient='{}', center='{}']".format(self.__tablename__,
+                                                                                       self.id,
+                                                                                       self.type,
+                                                                                       self.date.isoformat(),
+                                                                                       self.patient_id,
+                                                                                       self.center_id)
+
+
+class InguinalMeshHerniaRepair(Event):
+    __tablename__ = 'MeshHerniaRepairs'
+
+    id = Column(Integer, ForeignKey('Events.id'), primary_key=True)
+
+    cepod = Column(Enum(Cepod), nullable=False)
+    side = Column(Enum(Side), nullable=False)
+    occurrence = Column(Enum(Occurrence), nullable=False)
+    hernia_type = Column(Enum(InguinalHerniaType), nullable=False)
+    complexity = Column(Enum(Complexity), nullable=False)
+
+    primary_surgeon_id = Column(ForeignKey('Users.id'), primary_key=True, nullable=True)
+    primary_surgeon = relationship(User, foreign_keys=[primary_surgeon_id])
+
+    secondary_surgeon_id = Column(ForeignKey('Users.id'), primary_key=True, nullable=True)
+    secondary_surgeon = relationship(User, foreign_keys=[secondary_surgeon_id])
+
+    tertiary_surgeon_id = Column(ForeignKey('Users.id'), primary_key=True, nullable=True)
+    tertiary_surgeon = relationship(User, foreign_keys=[tertiary_surgeon_id])
+
+    antibiotics = relationship("DrugEventAssociation")
+
+    additional_procedure = Column(String(LONG_TEXT_LENGTH), nullable=True)
+    anaesthetic_type = Column(String(SHORT_TEXT_LENGTH), nullable=False)
+    complications = Column(String(LONG_TEXT_LENGTH), nullable=True)
+    diathermy_used = Column(Boolean, nullable=False)
+    discharge_date = Column(Date, nullable=True)
+    mesh_type = Column(String(SHORT_TEXT_LENGTH), nullable=False)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'Mesh Hernia Repair',
+    }
+
+
+class Followup(Event):
+    __tablename__ = 'Followups'
+
+    id = Column(Integer, ForeignKey('Events.id'), primary_key=True)
+
+    attendee_id = Column(ForeignKey('Users.id'), primary_key=True, nullable=True)
+    attendee = relationship(User)
+
+    pain = Column(Enum(Pain), default=Pain.No_Pain, nullable=False)
+    pain_comments = Column(String(LONG_TEXT_LENGTH), nullable=True)
+
+    mesh_awareness = Column(Boolean, default=False, nullable=False)
+    mesh_awareness_comments = Column(String(LONG_TEXT_LENGTH), nullable=True)
+
+    infection = Column(Boolean, default=False, nullable=False)
+    infection_comments = Column(String(LONG_TEXT_LENGTH), nullable=True)
+
+    seroma = Column(Boolean, default=False, nullable=False)
+    seroma_comments = Column(String(LONG_TEXT_LENGTH), nullable=True)
+
+    numbness = Column(Boolean, default=False, nullable=False)
+    numbness_comments = Column(String(LONG_TEXT_LENGTH), nullable=True)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'Follow-Up',
+    }

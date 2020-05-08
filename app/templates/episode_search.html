@@ -28,8 +28,8 @@
                     {{ form.patient_id(class='form-control') }}
                 </div>
                 <div class="form-group">
-                    {{ form.hospital_id.label(class='col-form-label') }}<br/>
-                    {{ form.hospital_id(class='form-control') }}
+                    {{ form.center_id.label(class='col-form-label') }}<br/>
+                    {{ form.center_id(class='form-control') }}
                 </div>
                 <p>{{ form.submit(class='btn btn-primary', onclick="$('#spinner').show()") }}
                 <div class="d-flex justify-content-center">
@@ -52,7 +52,7 @@
                         <th scope="col">Type</th>
                         <th scope="col">Date</th>
                         <th scope="col">Patient</th>
-                        <th scope="col">Hospital</th>
+                        <th scope="col">Center</th>
                         <th scope="col">Surgery</th>
                         <th scope="col">Comments</th>
                     </tr>
@@ -63,7 +63,7 @@
                         <td><a href="{{ url_for('episode', id=result.id) }}">{{ result.episode_type.name }}</a></td>
                         <td>{{ result.date }}</td>
                         <td>{{ result.patient.name }}</td>
-                        <td>{{ result.hospital.name }}</td>
+                        <td>{{ result.center.name }}</td>
                         {% if result.surgery %}
                         <td>{{ result.surgery.procedure.name }}</td>
                         {% else %}
@@ -83,6 +83,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block script %}
 <script>
 document.addEventListener("DOMContentLoaded", function(event) {
   $('#spinner').hide();

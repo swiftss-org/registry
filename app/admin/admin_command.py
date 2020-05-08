@@ -1,6 +1,6 @@
 import logging
 
-from app.tests import data_generator
+from app.tests import test_data
 
 
 def execute(application, command):
