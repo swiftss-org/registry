@@ -98,16 +98,16 @@ class FollowupForm(EventForm):
                        validators=[DataRequired()])
     pain_comments = StringField('Pain Description', validators=[Optional()])
 
-    mesh_awareness = BooleanField('Aware of Mesh?', validators=[DataRequired()])
+    mesh_awareness = BooleanField('Aware of Mesh?')
     mesh_awareness_comments = StringField('Mesh Awareness Description', validators=[Optional()])
 
-    infection = BooleanField('Infection?', validators=[DataRequired()])
+    infection = BooleanField('Infection?')
     infection_comments = StringField('Infection Description', validators=[Optional()])
 
-    seroma = BooleanField('Seroma?', validators=[DataRequired()])
+    seroma = BooleanField('Seroma?')
     seroma_comments = StringField('Seroma Description', validators=[Optional()])
 
-    numbness = BooleanField('Numbness?', validators=[DataRequired()])
+    numbness = BooleanField('Numbness?')
     numbness_comments = StringField('Numbness Description', validators=[Optional()])
 
 
@@ -143,7 +143,9 @@ class InguinalMeshHerniaRepairForm(EventForm):
                                    validators=[DataRequired()])
 
     anaesthetic = StringField('Anaesthetic', validators=[DataRequired()])
-    diathermy_used = BooleanField('Diathermy Used?', validators=[DataRequired()])
+    diathermy_used = BooleanField('Diathermy Used?',
+                                  coerce=coerce_for_bool(),
+                                  validators=[DataRequired()])
 
     primary_surgeon_id = SelectField('Primary Surgeon', validators=[Optional()])
     secondary_surgeon_id = SelectField('Secondary Surgeon', validators=[Optional()])
