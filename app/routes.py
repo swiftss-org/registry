@@ -236,6 +236,9 @@ def patient_create():
 @login_required
 def patient(id):
     patient = db.session.query(Patient).filter(Patient.id == id).first()
+    if patient is None:
+        return error('Unable to find patient with id {}.'.format(id))
+
     events = db.session.query(Event).filter(Event.patient_id == patient.id).all()
 
     form = PatientEditForm(obj=patient)
@@ -252,7 +255,7 @@ def patient(id):
         form.age.data = datetime.date.today().year - patient.birth_year
         form.center_id.data = str(current_user.center.id)
 
-    return render_template('patient.html', title='Patient Details', form=form, events=events)
+    return render_template('patient.html', title='Patient Details for {}'.format(patient.name), form=form, events=events)
 
 
 @application.route('/event/<int:id>', methods=['GET', 'POST'])
