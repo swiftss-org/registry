@@ -1,7 +1,6 @@
 import datetime
 import logging
 
-from app.util.filter import like_all
 from flask import current_app as application
 from flask import request, render_template, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user, login_required
@@ -14,6 +13,7 @@ from app.route_helper import event_helper
 from app.route_helper.choices import id_choices
 from app.route_helper.patient_helper import copy_to_patient
 from app.util import restful
+from app.util.filter import like_all
 
 
 @application.before_first_request
@@ -286,10 +286,7 @@ def _event(id, inline):
         flash('{} details have been updated.'.format(helper.title()))
         return redirect(url_for('event', id=event.id))
 
-    if inline:
-        return render_template(helper.template_inline(), title=helper.title(), form=form)
-    else:
-        return render_template(helper.template(), title=helper.title(), form=form)
+    return render_template(helper.template(inline), title=helper.title(), form=form)
 
 
 @application.route('/event/create/<string:type>', methods=['GET', 'POST'])
@@ -298,7 +295,7 @@ def event_create(type):
     return _event_create(type, False)
 
 
-@application.route('/event_inine/create/<string:type>', methods=['GET', 'POST'])
+@application.route('/event_inline/create/<string:type>', methods=['GET', 'POST'])
 @login_required
 def event_create_inline(type):
     return _event_create(type, True)
@@ -321,10 +318,7 @@ def _event_create(type, inline):
         flash('New {} has been recorded.'.format(helper.title()))
         return redirect(url_for('event', id=event.id))
 
-    if inline:
-        return render_template(helper.template_inline(), title=helper.title(), form=form)
-    else:
-        return render_template(helper.template(), title=helper.title(), form=form)
+    return render_template(helper.template(inline), title=helper.title(), form=form)
 
 
 @application.route('/prefetch/patients', methods=['GET'])

@@ -1,7 +1,5 @@
-import importlib
-
 from app.forms import FollowupForm, InguinalMeshHerniaRepairForm
-from app.models import Patient, Center, MeshType, User, Event, InguinalMeshHerniaRepair, Followup
+from app.models import Patient, Center, MeshType, User, InguinalMeshHerniaRepair, Followup
 from app.route_helper.choices import id_choices
 
 
@@ -31,10 +29,16 @@ class EventHelper:
         event.center_id = form.center_id.data
         event.comments = form.comments.data
 
-    def template(self):
+    def template(self, inline):
+        if inline:
+            return self._template_inline()
+        else:
+            return self._template()
+
+    def _template(self):
         return _format_name(self.name(), '_').lower() + '.html'
 
-    def template_inline(self):
+    def _template_inline(self):
         return _format_name(self.name(), '_').lower() + '_inline.html'
 
     def title(self):
