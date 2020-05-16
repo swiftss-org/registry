@@ -1,4 +1,4 @@
-def copy_to_patient(form, patient):
+def _copy_to_patient(form, patient):
     patient.name = form.name.data
     patient.national_id = form.national_id.data
     patient.birth_year = form.birth_year.data
