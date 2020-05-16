@@ -7,13 +7,11 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 from app import db, login, initalise, constants
-from app.route_helper.event_helper import populate_mesh_hernia_repair_choices, copy_to_mesh_hermia_repair, \
-    population_followup_choices, copy_to_followup
+from app.forms import LoginForm, PatientSearchForm, PatientEditForm, UserEditForm
+from app.models import User, Patient, Event, Center
+from app.route_helper import event_helper
 from app.route_helper.choices import id_choices
-from app.forms import LoginForm, PatientSearchForm, PatientEditForm, UserEditForm, InguinalMeshHerniaRepairForm, \
-    FollowupForm
-from app.models import User, Patient, Event, Center, InguinalMeshHerniaRepair, Followup
-from app.route_helper.patient_helper import _copy_to_patient
+from app.route_helper.patient_helper import copy_to_patient
 from app.util import restful
 from app.util.filter import like_all
 
@@ -215,7 +213,7 @@ def patient_create():
     form.center_id.choices = id_choices(db.session, Center, include_empty=True)
 
     if form.validate_on_submit():
-        _copy_to_patient(form, patient)
+        copy_to_patient(form, patient)
         patient.created_by = current_user
         patient.updated_by = current_user
 
@@ -236,13 +234,16 @@ def patient_create():
 @login_required
 def patient(id):
     patient = db.session.query(Patient).filter(Patient.id == id).first()
+    if patient is None:
+        return error('Unable to find patient with id {}.'.format(id))
+
     events = db.session.query(Event).filter(Event.patient_id == patient.id).all()
 
     form = PatientEditForm(obj=patient)
     form.center_id.choices = id_choices(db.session, Center, include_empty=True)
 
     if form.validate_on_submit():
-        _copy_to_patient(form, patient)
+        copy_to_patient(form, patient)
         patient.updated_by = current_user
 
         db.session.commit()
@@ -252,112 +253,72 @@ def patient(id):
         form.age.data = datetime.date.today().year - patient.birth_year
         form.center_id.data = str(current_user.center.id)
 
-    return render_template('patient.html', title='Patient Details', form=form, events=events)
+    return render_template('patient.html', title='Patient Details for {}'.format(patient.name), form=form,
+                           events=events)
 
 
 @application.route('/event/<int:id>', methods=['GET', 'POST'])
 @login_required
 def event(id):
+    return _event(id, False)
+
+
+@application.route('/event_inline/<int:id>', methods=['GET', 'POST'])
+@login_required
+def event_inline(id):
+    return _event(id, True)
+
+
+def _event(id, inline):
     event = db.session.query(Event).filter(Event.id == id).first()
     if event is None:
-        return error("Couldn't find an event with id {}".format(str(id)))
+        return error('Unable to find an event with id {}.'.format(id))
 
-    if event.type == InguinalMeshHerniaRepair.__mapper_args__['polymorphic_identity']:
-        return redirect(url_for('hernia_repair', id=event.id))
-    elif event.type == Followup.__mapper_args__['polymorphic_identity']:
-        return redirect(url_for('followup', id=event.id))
-
-    return error("Don't know how to show an event of type {}".format(event.type))
-
-
-@application.route('/event/followup/<int:id>', methods=['GET', 'POST'])
-@login_required
-def followup(id):
-    _event = db.session.query(Followup).filter(Followup.id == id).first()
-
-    form = FollowupForm(obj=_event)
-    population_followup_choices(db.session, form)
+    helper = event_helper.find_helper(event)
+    form = helper.form(event)
+    helper.populate_choices(db.session, form)
 
     if form.validate_on_submit():
-        copy_to_followup(_event, form)
-        _event.updated_by = current_user
+        helper.copy_to_event(form, event)
+        event.updated_by = current_user
 
         db.session.commit()
-        flash('Follow-up details for {} have been updated.'.format(_event.patient.name))
+        flash('{} details have been updated.'.format(helper.title()))
+        return redirect(url_for('event', id=event.id))
 
-        return redirect(url_for('followup', id=_event.id))
-
-    return render_template('followup.html', title='Follow-Up', form=form)
+    return render_template(helper.template(inline), title=helper.title(), form=form)
 
 
-@application.route('/event/followup/create', methods=['GET', 'POST'])
+@application.route('/event/create/<string:type>', methods=['GET', 'POST'])
 @login_required
-def followup_create():
-    _event = Followup()
+def event_create(type):
+    return _event_create(type, False)
 
-    form = FollowupForm(obj=_event)
-    population_followup_choices(db.session, form)
+
+@application.route('/event_inline/create/<string:type>', methods=['GET', 'POST'])
+@login_required
+def event_create_inline(type):
+    return _event_create(type, True)
+
+
+def _event_create(type, inline):
+    helper = event_helper.find_helper(type)
+    event = helper.event()
+    form = helper.form(event)
+    helper.populate_choices(db.session, form)
 
     if form.validate_on_submit():
-        copy_to_followup(_event, form)
+        helper.copy_to_event(form, event)
 
-        _event.created_by = current_user
-        _event.updated_by = current_user
+        event.created_by = current_user
+        event.updated_by = current_user
 
-        db.session.add(_event)
+        db.session.add(event)
         db.session.commit()
-        flash('New follow-up details for {} have been recorded.'.format(_event.patient.name))
+        flash('New {} has been recorded.'.format(helper.title()))
+        return redirect(url_for('event', id=event.id))
 
-        return redirect(url_for('followup', id=_event.id))
-
-    return render_template('followup.html', title='Follow-Up', form=form)
-
-
-@application.route('/event/hernia_repair/<int:id>', methods=['GET', 'POST'])
-@login_required
-def hernia_repair(id):
-    _inguinal_mesh_hernia_repair = db.session.query(InguinalMeshHerniaRepair).filter(
-        InguinalMeshHerniaRepair.id == id).first()
-
-    form = InguinalMeshHerniaRepairForm(obj=_inguinal_mesh_hernia_repair)
-    populate_mesh_hernia_repair_choices(db.session, form)
-
-    if form.validate_on_submit():
-        copy_to_mesh_hermia_repair(_inguinal_mesh_hernia_repair, form)
-        _inguinal_mesh_hernia_repair.updated_by = current_user
-
-        db.session.commit()
-        flash('New inguinal mesh hernia surgery details for {} have been updated.'.format(
-            _inguinal_mesh_hernia_repair.patient.name))
-
-        return redirect(url_for('hernia_repair', id=_inguinal_mesh_hernia_repair.id))
-
-    return render_template('hernia_repair.html', title='Inguinal Mesh Hernia Surgery', form=form)
-
-
-@application.route('/event/hernia_repair/create', methods=['GET', 'POST'])
-@login_required
-def hernia_repair_create():
-    _inguinal_mesh_hernia_repair = InguinalMeshHerniaRepair()
-
-    form = InguinalMeshHerniaRepairForm(obj=_inguinal_mesh_hernia_repair)
-    populate_mesh_hernia_repair_choices(db.session, form)
-
-    if form.validate_on_submit():
-        copy_to_mesh_hermia_repair(_inguinal_mesh_hernia_repair, form)
-
-        _inguinal_mesh_hernia_repair.created_by = current_user
-        _inguinal_mesh_hernia_repair.updated_by = current_user
-
-        db.session.add(_inguinal_mesh_hernia_repair)
-        db.session.commit()
-        flash('New inguinal mesh hernia surgery details for {} have been recorded.'.format(
-            _inguinal_mesh_hernia_repair.patient.name))
-
-        return redirect(url_for('hernia_repair', id=_inguinal_mesh_hernia_repair.id))
-
-    return render_template('inguinal_mesh_hernia_repair.html', title='Record New Inguinal Mesh Hernia Surgery',
-                           form=form)
+    return render_template(helper.template(inline), title=helper.title(), form=form)
 
 
 @application.route('/prefetch/patients', methods=['GET'])

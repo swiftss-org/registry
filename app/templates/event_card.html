@@ -1,11 +1,10 @@
-<div class="card">
+<div id="card_{{ event.id }}" class="card">
     <div class="card-header" id="card_header_event_{{ event.id }}">
         <h5 class="mb-0">
             <button class="btn btn-link" type="button" data-toggle="collapse"
                     data-target="#card_event_{{ event.id }}"
                     aria-expanded="true" aria-controls="card_event_{{ event.id }}">
-                Collapsible Group Item #1
-            </button>
+                <h2>{{ event.type }}</h2>
         </h5>
     </div>
     <div id="card_event_{{ event.id }}" class="collapse show"
@@ -13,6 +12,11 @@
          data-parent="#accordion_events">
         <div class="card-body">
             <p>Event {{ event.type }}</p>
+            <button class="btn btn-primary" type="button"
+                    onclick="$('#card_event_body_{{ event.id }}').load('{{ url_for('event_inline', id=event.id) }}')">
+                Show Details
+            </button>
+            <div id="card_event_body_{{ event.id }}"></div>
         </div>
     </div>
 </div>
