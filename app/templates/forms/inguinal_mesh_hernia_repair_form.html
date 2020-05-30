@@ -1,16 +1,6 @@
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
-    <fieldset class="form-group row">
-        <div class="row">
-            <div class="col-2">
-                {{ form.discharge_date.label(class='col-form-label') }}
-            </div>
-            <div class="col-4">
-                {{ form.discharge_date(class='form-control') }}
-                {{ macros.with_errors(form.discharge_date) }}
-            </div>
-        </div>
-    </fieldset>
+    {% include 'forms/event_form.html' %}
     <hr/>
     <fieldset class="form-group row">
         <div class="row">
@@ -18,8 +8,19 @@
                 {{ form.cepod.label(class='col-form-label') }}
             </div>
             <div class="col-4">
-                {{ form.cepod(class='form-control') }}
+                {{ form.cepod(class='form-control', readonly=inline) }}
                 {{ macros.with_errors(form.cepod) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.side.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.side(class='form-control', readonly=inline) }}
+                {{ macros.with_errors(form.side) }}
             </div>
         </div>
     </fieldset>
@@ -81,11 +82,33 @@
     <fieldset class="form-group row">
         <div class="row">
             <div class="col-2">
+                {{ form.anaesthetic_other.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.anaesthetic_other(class='form-control') }}
+                {{ macros.with_errors(form.anaesthetic_other) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
                 {{ form.diathermy_used.label(class='col-form-label') }}
             </div>
             <div class="col-4">
                 {{ form.diathermy_used(class='form-control') }}
                 {{ macros.with_errors(form.diathermy_used) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group row">
+        <div class="row">
+            <div class="col-2">
+                {{ form.discharge_date.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.discharge_date(class='form-control') }}
+                {{ macros.with_errors(form.discharge_date) }}
             </div>
         </div>
     </fieldset>
@@ -145,7 +168,9 @@
         </div>
     </fieldset>
     {{ macros.with_created_by(form) }}
-    <p>{{ form.submit(class='btn btn-primary', onclick="$('#spinner').show()") }}
-        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
-    </p>
+    {% if not inline %}
+        <p>{{ form.submit(class='btn btn-primary', onclick="$('#spinner').show()") }}
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+        </p>
+    {% endif %}
 </form>

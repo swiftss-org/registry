@@ -1,28 +1,42 @@
 {% extends "base.html" %}
-{% block head %}
-{% endblock %}
-{% block title %}Patient{% endblock %}
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-sm">
-            <h1>{{ title }}</h1>
-            <hr/>
-            {% include 'forms/patient_form.html' %}
-            <hr/>
-            <h2>Care Events</h2>
-            <p>
-                <button class="btn btn-primary" type="button">Record a new Mesh Hernia Repair</button>
-                <button class="btn btn-primary" type="button">Record a new Follow-Up</button>
-                <button class="btn btn-primary" type="button">Record a new Out Patients</button>
-            </p>
+            <div class="accordion" id="accordion_patient">
+                <div class="card">
+                    <div class="card-header" id="card_header_patient">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse"
+                                    data-target="#card_patient"
+                                    aria-expanded="true" aria-controls="card_patient">
+                                <h1>{{title}}</h1>
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="card_patient" class="collapse show"
+                         aria-labelledby="card_header_patient"
+                         data-parent="#accordion_patient">
+                        <div class="card-body">
+                            <p>{% include 'forms/patient_form.html' %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% if events %}
             <div class="accordion" id="accordion_events">
                 {% for event in events %}
-                {% include 'forms/event_card.html' %}
+                {% include 'event_card.html' %}
                 {% endfor %}
             </div>
             {% endif %}
+            <hr/>
+            <p>
+                <a class="btn btn-primary" href="{{ url_for('event_create', type='Followup') }}" role="button">Record a new
+                    Follow-Up</a>
+                <a class="btn btn-primary" href="{{ url_for('event_create', type='InguinalMeshHerniaRepair') }}"
+                   role="button">Record a new Inguinal Mesh Hernia Repair</a>
+            </p>
         </div>
     </div>
 </div>

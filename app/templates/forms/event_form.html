@@ -1,6 +1,17 @@
 <fieldset class="form-group row">
     <div class="row">
         <div class="col-2">
+            {{ form.type.label(class='col-form-label') }}
+        </div>
+        <div class="col-4">
+            {{ form.type(class='form-control') }}
+            {{ macros.with_errors(form.type) }}
+        </div>
+    </div>
+</fieldset>
+<fieldset class="form-group row">
+    <div class="row">
+        <div class="col-2">
             {{ form.date.label(class='col-form-label') }}
         </div>
         <div class="col-4">
@@ -19,6 +30,16 @@
             {{ macros.with_errors(form.patient_id) }}
         </div>
     </div>
+    {% if form.patient_id.data %}
+    <div class="row">
+        <div class="col-2">&nbsp;</div>
+        <div class="col-4">
+            <center>
+                <a href="{{ url_for('patient', id=form.patient_id.data) }}">Show Patient Details</a>
+            </center>
+        </div>
+    </div>
+    {% endif %}
 </fieldset>
 <fieldset class="form-group row">
     <div class="row">

@@ -10,7 +10,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     $('#date').datepicker(
     {
-        format: 'yyyy-mm-dd'
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        assumeNearbyYear: true,
+        endDate: '0d',
+        todayHighlight: true,
+        todayBtn: true
     });
 
     $('#spinner').hide();

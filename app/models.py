@@ -263,6 +263,12 @@ class InguinalMeshHerniaRepair(Event):
     occurrence = Column(Enum(Occurrence), nullable=False)
     hernia_type = Column(Enum(InguinalHerniaType), nullable=False)
     complexity = Column(Enum(Complexity), nullable=False)
+    mesh_type = Column(String(SHORT_TEXT_LENGTH), nullable=False)
+    antibiotics = relationship("DrugEventAssociation")
+    anaesthetic_type = Column(Enum(AnestheticType), nullable=False)
+    anaesthetic_other = Column(String(SHORT_TEXT_LENGTH), nullable=False)
+    diathermy_used = Column(Boolean, nullable=False)
+    discharge_date = Column(Date, nullable=True)
 
     primary_surgeon_id = Column(ForeignKey('Users.id'), primary_key=True, nullable=True)
     primary_surgeon = relationship(User, foreign_keys=[primary_surgeon_id])
@@ -273,14 +279,9 @@ class InguinalMeshHerniaRepair(Event):
     tertiary_surgeon_id = Column(ForeignKey('Users.id'), primary_key=True, nullable=True)
     tertiary_surgeon = relationship(User, foreign_keys=[tertiary_surgeon_id])
 
-    antibiotics = relationship("DrugEventAssociation")
-
     additional_procedure = Column(String(LONG_TEXT_LENGTH), nullable=True)
-    anaesthetic_type = Column(String(SHORT_TEXT_LENGTH), nullable=False)
     complications = Column(String(LONG_TEXT_LENGTH), nullable=True)
-    diathermy_used = Column(Boolean, nullable=False)
-    discharge_date = Column(Date, nullable=True)
-    mesh_type = Column(String(SHORT_TEXT_LENGTH), nullable=False)
+
 
     __mapper_args__ = {
         'polymorphic_identity': 'Mesh Hernia Repair',

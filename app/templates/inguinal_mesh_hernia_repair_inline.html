@@ -1,0 +1,15 @@
+{% extends "inline.html" %}
+{% block content %}
+<p>
+    <a href="{{ url_for('event', id=form.id.data) }}" class="btn btn-primary">Edit</a>
+    <a href="{{ url_for('event', id=form.id.data) }}" class="btn btn-secondary">Delete</a>
+</p>
+<hr/>
+<div id="event_form_container" class="container">
+    {% include 'forms/inguinal_mesh_hernia_repair_form.html' %}
+</div>
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('static', filename='js/event.js') }}"></script>
+<script src="{{ url_for('static', filename='js/inguinal_mesh_hernia_repair.js') }}"></script>
+{% endblock %}

@@ -1,3 +1,5 @@
+from datetime import date
+
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, \
     HiddenField, IntegerField, RadioField, DateField
@@ -5,6 +7,13 @@ from wtforms.validators import DataRequired, Optional
 
 from app.models import Cepod, Side, Occurrence, InguinalHerniaType, Complexity, MeshType, AnestheticType, Pain
 from app.util.form_utils import choice_for_bool, coerce_for_bool, choice_for_enum, coerce_for_enum
+
+
+def _readonly_render_kw(readonly):
+    if readonly:
+        return {'readonly': True}
+    else:
+        return {}
 
 
 class LoginForm(FlaskForm):
@@ -72,13 +81,22 @@ class PatientSearchForm(FlaskForm):
 
 
 class EventForm(FlaskForm):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        if 'inline' in kwargs:
+            self.inline = True
+        else:
+            self.inline = False
+
     id = HiddenField('id')
     version = HiddenField('version')
 
-    type = HiddenField('Type')
-    date = DateField('Date')
+    type = StringField('Type', render_kw={'readonly': True})
+    date = DateField('Date', default=date.today)
 
-    patient_id = SelectField('Patient')
+    patient_id = SelectField('Patient', render_kw={'readonly': True})
     center_id = SelectField('Center')
     comments = TextAreaField('Comments')
 
@@ -86,10 +104,15 @@ class EventForm(FlaskForm):
     created_at = HiddenField('Created At')
     updated_by = HiddenField('Updated By')
     updated_at = HiddenField('Updated At')
+
     submit = SubmitField('Save Changes')
 
 
 class FollowupForm(EventForm):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
     attendee_id = SelectField('Attendee', validators=[DataRequired()])
 
     pain = SelectField('Pain',
@@ -98,21 +121,23 @@ class FollowupForm(EventForm):
                        validators=[DataRequired()])
     pain_comments = StringField('Pain Description', validators=[Optional()])
 
-    mesh_awareness = BooleanField('Aware of Mesh?', validators=[DataRequired()])
+    mesh_awareness = BooleanField('Aware of Mesh?')
     mesh_awareness_comments = StringField('Mesh Awareness Description', validators=[Optional()])
 
-    infection = BooleanField('Infection?', validators=[DataRequired()])
+    infection = BooleanField('Infection?')
     infection_comments = StringField('Infection Description', validators=[Optional()])
 
-    seroma = BooleanField('Seroma?', validators=[DataRequired()])
+    seroma = BooleanField('Seroma?')
     seroma_comments = StringField('Seroma Description', validators=[Optional()])
 
-    numbness = BooleanField('Numbness?', validators=[DataRequired()])
+    numbness = BooleanField('Numbness?')
     numbness_comments = StringField('Numbness Description', validators=[Optional()])
 
 
 class InguinalMeshHerniaRepairForm(EventForm):
-    discharge_date = StringField('Discharge Date')
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     cepod = SelectField('CEPOD',
                         choices=choice_for_enum(Cepod, include_blank=False),
@@ -134,16 +159,14 @@ class InguinalMeshHerniaRepairForm(EventForm):
                              choices=choice_for_enum(Complexity, include_blank=False),
                              coerce=coerce_for_enum(Complexity),
                              validators=[DataRequired()])
-
     mesh_type = StringField('Mesh Type', validators=[DataRequired()])
-
     anaesthetic_type = SelectField('Anaesthetic Type',
-                                   choices=choice_for_enum(AnestheticType, include_blank=False),
-                                   coerce=coerce_for_enum(AnestheticType),
-                                   validators=[DataRequired()])
-
-    anaesthetic = StringField('Anaesthetic', validators=[DataRequired()])
-    diathermy_used = BooleanField('Diathermy Used?', validators=[DataRequired()])
+                              choices=choice_for_enum(AnestheticType, include_blank=False),
+                              coerce=coerce_for_enum(AnestheticType),
+                              validators=[DataRequired()])
+    anaesthetic_other = StringField('Anaesthetic Other', validators=[Optional()])
+    diathermy_used = BooleanField('Diathermy Used?')
+    discharge_date = StringField('Discharge Date')
 
     primary_surgeon_id = SelectField('Primary Surgeon', validators=[Optional()])
     secondary_surgeon_id = SelectField('Secondary Surgeon', validators=[Optional()])

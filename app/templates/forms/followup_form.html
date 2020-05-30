@@ -125,6 +125,9 @@
     </fieldset>
     {{ macros.with_created_by(form) }}
     <p>{{ form.submit(class='btn btn-primary', onclick="$('#spinner').show()") }}
+        {% if mode == 'load' %}
+            <a href="{{ url_for('patient', id=event.patient.id) }}" class="btn btn-secondary">Show Patient</a>
+        {% endif %}
         <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
     </p>
 </form>
