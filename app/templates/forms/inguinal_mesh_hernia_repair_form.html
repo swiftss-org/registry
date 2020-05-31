@@ -96,6 +96,8 @@
                 {{ form.diathermy_used.label(class='col-form-label') }}
             </div>
             <div class="col-4">
+                <button id="diathermy_used_yes_btn" type="button" class="btn">Yes</button>
+                <button id="diathermy_used_no_btn" type="button" class="btn">No</button>
                 {{ form.diathermy_used(class='form-control') }}
                 {{ macros.with_errors(form.diathermy_used) }}
             </div>

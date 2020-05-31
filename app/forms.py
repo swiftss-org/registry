@@ -165,7 +165,7 @@ class InguinalMeshHerniaRepairForm(EventForm):
                               coerce=coerce_for_enum(AnestheticType),
                               validators=[DataRequired()])
     anaesthetic_other = StringField('Anaesthetic Other', validators=[Optional()])
-    diathermy_used = BooleanField('Diathermy Used?')
+    diathermy_used = HiddenField('Diathermy Used?')
     discharge_date = StringField('Discharge Date')
 
     primary_surgeon_id = SelectField('Primary Surgeon', validators=[Optional()])
