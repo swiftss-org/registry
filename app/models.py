@@ -267,7 +267,7 @@ class InguinalMeshHerniaRepair(Event):
     antibiotics = relationship("DrugEventAssociation")
     anaesthetic_type = Column(Enum(AnestheticType), nullable=False)
     anaesthetic_other = Column(String(SHORT_TEXT_LENGTH), nullable=False)
-    diathermy_used = Column(Boolean, nullable=False)
+    diathermy_used = Column(Boolean, nullable=True)
     discharge_date = Column(Date, nullable=True)
 
     primary_surgeon_id = Column(ForeignKey('Users.id'), primary_key=True, nullable=True)

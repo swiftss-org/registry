@@ -55,8 +55,21 @@ function toggle_btns(state_element_id, yes_btn_id, no_btn_id)
         }
     };
 
-    toggle_class(yes_btn_id, initial_class, null, null);
-    toggle_class(no_btn_id, initial_class, null, null);
+    if($(state_element_id).val() == 'True')
+    {
+        toggle_class(yes_btn_id, on_class, null, null);
+        toggle_class(no_btn_id, off_class, null, null);
+    }
+    else if($(state_element_id).val() == 'False')
+    {
+        toggle_class(yes_btn_id, off_class, null, null);
+        toggle_class(no_btn_id, on_class, null, null);
+    }
+    else
+    {
+        toggle_class(yes_btn_id, initial_class, null, null);
+        toggle_class(no_btn_id, initial_class, null, null);
+    }
 
     $(yes_btn_id).bind('click', f);
     $(no_btn_id).bind('click', f);

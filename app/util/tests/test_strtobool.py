@@ -1,4 +1,5 @@
 from app import strtobool
+from app.util.strtobool import strtobool_optional
 
 
 def test_strtobool():
@@ -15,3 +16,11 @@ def test_strtobool():
     assert bool(strtobool('False')) is False
     assert bool(strtobool('Off')) is False
     assert bool(strtobool('0')) is False
+
+
+def test_strtobool_optional():
+    assert bool(strtobool_optional('True')) is True
+    assert bool(strtobool_optional('False')) is False
+    assert strtobool_optional(None) is None
+    assert strtobool_optional('') is None
+

@@ -1,7 +1,7 @@
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     {% include 'forms/event_form.html' %}
-    <fieldset class="form-group row">
+    <fieldset class="form-group">
         <div class="row">
             <div class="col-2">
                 {{ form.attendee_id.label(class='col-form-label') }}
@@ -13,7 +13,7 @@
         </div>
     </fieldset>
     <hr/>
-    <fieldset class="form-group row">
+    <fieldset class="form-group">
         <div class="row">
             <div class="col-2">
                 {{ form.pain.label(class='col-form-label') }}
@@ -24,7 +24,7 @@
             </div>
         </div>
     </fieldset>
-    <fieldset id='pain_comments_fieldset' class="form-group row">
+    <fieldset id='pain_comments_fieldset' class="form-group">
         <div class="row">
             <div class="col-2">
                 {{ form.pain_comments.label(class='form-check-label') }}
@@ -35,7 +35,7 @@
             </div>
         </div>
     </fieldset>
-    <fieldset class="form-group row">
+    <fieldset class="form-group">
         <div class="row">
             <div class="col-2">
                 {{ form.mesh_awareness.label(class='col-form-label') }}
@@ -46,7 +46,7 @@
             </div>
         </div>
     </fieldset>
-    <fieldset id='mesh_awareness_comments_fieldset' class="form-group row">
+    <fieldset id='mesh_awareness_comments_fieldset' class="form-group">
         <div class="row">
             <div class="col-2">
                 {{ form.mesh_awareness_comments.label(class='col-form-label') }}
@@ -57,7 +57,7 @@
             </div>
         </div>
     </fieldset>
-    <fieldset class="form-group row">
+    <fieldset class="form-group">
         <div class="row">
             <div class="col-2">
                 {{ form.infection.label(class='col-form-label') }}
@@ -68,7 +68,7 @@
             </div>
         </div>
     </fieldset>
-    <fieldset id='infection_comments_fieldset' class="form-group row">
+    <fieldset id='infection_comments_fieldset' class="form-group">
         <div class="row">
             <div class="col-2">
                 {{ form.infection_comments.label(class='col-form-label') }}
@@ -79,7 +79,7 @@
             </div>
         </div>
     </fieldset>
-    <fieldset class="form-group row">
+    <fieldset class="form-group">
         <div class="row">
             <div class="col-2">
                 {{ form.seroma.label(class='col-form-label') }}
@@ -90,7 +90,7 @@
             </div>
         </div>
     </fieldset>
-    <fieldset id='seroma_comments_fieldset' class="form-group row">
+    <fieldset id='seroma_comments_fieldset' class="form-group">
         <div class="row">
             <div class="col-2">
                 {{ form.seroma_comments.label(class='col-form-label') }}
@@ -101,7 +101,7 @@
             </div>
         </div>
     </fieldset>
-    <fieldset class="form-group row">
+    <fieldset class="form-group">
         <div class="row">
             <div class="col-2">
                 {{ form.numbness.label(class='col-form-label') }}
@@ -112,7 +112,7 @@
             </div>
         </div>
     </fieldset>
-    <fieldset id='numbness_comments_fieldset' class="form-group row">
+    <fieldset id='numbness_comments_fieldset' class="form-group">
         <div class="row">
             <div class="col-2">
                 {{ form.numbness_comments.label(class='col-form-label') }}

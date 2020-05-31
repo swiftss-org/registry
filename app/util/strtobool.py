@@ -15,3 +15,16 @@ def strtobool(val):
         return 0
     else:
         raise ValueError("invalid truth value %r" % (val,))
+
+
+def strtobool_optional(val):
+    if val is None:
+        return None
+
+    if isinstance(val, bool):
+        return val
+
+    if isinstance(val, str) and len(val) == 0:
+        return None
+
+    return bool(strtobool(val))
