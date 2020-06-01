@@ -1,14 +1,12 @@
-document.getElementById("submit").addEventListener("click", function() {
+document.getElementById("submit").addEventListener("click", function () {
     document.getElementById("attendees").value = attendeeTableToJSON()
 });
 
-function addAttendee()
-{
+function addAttendee() {
     attendee_text = $("#attendee_id :selected").text();
     attendee_id = $("#attendee_id :selected").val();
 
-    if($("#attendee_row_" + attendee_id).length > 0)
-    {
+    if ($("#attendee_row_" + attendee_id).length > 0) {
         /* Item already added so do nothing */
         return
     }
@@ -26,14 +24,12 @@ function addAttendee()
     $('#attendee_table tr:last').after(html_row);
 }
 
-function removeAttendee(attendee_id)
-{
+function removeAttendee(attendee_id) {
     attendee_row_id = 'attendee_row_' + attendee_id
     $('#' + attendee_row_id).remove();
 }
 
-function attendeeTableToJSON()
-{
+function attendeeTableToJSON() {
     var table = $('#attendee_table').tableToJSON(); // Convert the table into a javascript object
     console.log(table)
     var json = JSON.stringify(table);

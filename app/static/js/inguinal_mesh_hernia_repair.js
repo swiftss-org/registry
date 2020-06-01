@@ -1,7 +1,5 @@
-document.addEventListener("DOMContentLoaded", function(event)
-{
-    show_hide('#anaesthetic_type', '#anaesthetic_other_fieldset', function(element)
-    {
+document.addEventListener("DOMContentLoaded", function (event) {
+    show_hide('#anaesthetic_type', '#anaesthetic_other_fieldset', function (element) {
         return element.val() == 'AnestheticType.Other';
     });
 
