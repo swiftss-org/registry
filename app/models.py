@@ -1,5 +1,5 @@
 import enum
-from datetime import datetime
+from datetime import datetime, date
 
 from flask_login import UserMixin
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Date, Enum, Boolean
@@ -151,8 +151,13 @@ class Patient(db.Model, ExtendedBase):
     version_id = Column(Integer, nullable=False)
     name = Column(String(SHORT_TEXT_LENGTH), nullable=False)
     gender = Column(String(1), nullable=False)
-    birth_year = Column(Integer(), nullable=True)
-    phone = Column(String(20), nullable=True)
+    dob = Column(Date(), nullable=True)
+    dob_year_only = Column(Boolean(), nullable=True)
+    phone_1 = Column(String(20), nullable=True)
+    phone_1_comments = Column(String(SHORT_TEXT_LENGTH), nullable=True)
+    phone_2 = Column(String(20), nullable=True)
+    phone_2_comments = Column(String(SHORT_TEXT_LENGTH), nullable=True)
+    hospital_number = Column(String(SHORT_TEXT_LENGTH), nullable=True)
     national_id = Column(String(SHORT_TEXT_LENGTH), nullable=True)
     address = Column(String(LONG_TEXT_LENGTH), nullable=True)
 
@@ -166,6 +171,18 @@ class Patient(db.Model, ExtendedBase):
     updated_at = Column('updated_at', DateTime(), default=datetime.now, onupdate=datetime.now, nullable=False)
     updated_by_id = Column(ForeignKey('Users.id'), nullable=False)
     updated_by = relationship(User, foreign_keys=[updated_by_id])
+
+    @property
+    def birth_year(self):
+        if self.dob:
+            return self.dob.year
+
+        return None
+
+    @birth_year.setter
+    def birth_year(self, year):
+        self.dob_year_only = True
+        self.dob = date(year, 1, 1)
 
     __mapper_args__ = {
         "version_id_col": version_id
@@ -282,7 +299,6 @@ class InguinalMeshHerniaRepair(Event):
     additional_procedure = Column(String(LONG_TEXT_LENGTH), nullable=True)
     complications = Column(String(LONG_TEXT_LENGTH), nullable=True)
 
-
     __mapper_args__ = {
         'polymorphic_identity': 'Mesh Hernia Repair',
     }
@@ -293,22 +309,22 @@ class Followup(Event):
 
     id = Column(Integer, ForeignKey('Events.id'), primary_key=True)
 
-    attendee_id = Column(ForeignKey('Users.id'), primary_key=True, nullable=True)
+    attendee_id = Column(ForeignKey('Users.id'), nullable=True)
     attendee = relationship(User)
 
     pain = Column(Enum(Pain), default=Pain.No_Pain, nullable=False)
     pain_comments = Column(String(LONG_TEXT_LENGTH), nullable=True)
 
-    mesh_awareness = Column(Boolean, default=False, nullable=False)
+    mesh_awareness = Column(Boolean, nullable=True)
     mesh_awareness_comments = Column(String(LONG_TEXT_LENGTH), nullable=True)
 
-    infection = Column(Boolean, default=False, nullable=False)
+    infection = Column(Boolean, nullable=True)
     infection_comments = Column(String(LONG_TEXT_LENGTH), nullable=True)
 
-    seroma = Column(Boolean, default=False, nullable=False)
+    seroma = Column(Boolean, nullable=True)
     seroma_comments = Column(String(LONG_TEXT_LENGTH), nullable=True)
 
-    numbness = Column(Boolean, default=False, nullable=False)
+    numbness = Column(Boolean, nullable=True)
     numbness_comments = Column(String(LONG_TEXT_LENGTH), nullable=True)
 
     __mapper_args__ = {

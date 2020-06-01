@@ -2,11 +2,12 @@ from datetime import date
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, \
-    HiddenField, IntegerField, DateField
+    HiddenField, IntegerField, DateField, ValidationError
 from wtforms.validators import DataRequired, Optional
 
 from app.models import Cepod, Side, Occurrence, InguinalHerniaType, Complexity, AnestheticType, Pain
 from app.util.form_utils import choice_for_bool, coerce_for_bool, choice_for_enum, coerce_for_enum
+from app.validators import validate_pain_comments
 
 
 def _readonly_render_kw(readonly):
@@ -47,14 +48,18 @@ class UserEditForm(UserForm):
 
 
 class PatientEditForm(FlaskForm):
-    id = HiddenField('Id')
+    id = StringField('Patient Id', render_kw={'readonly': True})
     name = StringField('Name', validators=[DataRequired()])
     national_id = StringField('National Id')
+    hospital_number = StringField('Hospital Number')
     birth_year = IntegerField('Year of Birth')
     age = IntegerField('Age')
     center_id = SelectField('Center', validators=[DataRequired()])
     gender = SelectField('Gender', choices=[('M', 'Male'), ('F', 'Female')], validators=[DataRequired()])
-    phone = StringField('Phone #')
+    phone_1 = StringField('Phone #1 No.')
+    phone_1_comments = StringField('Phone #1 Comments')
+    phone_2 = StringField('Phone #2 No.')
+    phone_2_comments = StringField('Phone #2 Comments')
     address = TextAreaField('Address (e.g. Village, District)')
     next_action = HiddenField('NextAction')
     created_by = HiddenField('Created By')
@@ -66,14 +71,15 @@ class PatientEditForm(FlaskForm):
 
 class PatientSearchForm(FlaskForm):
     id = HiddenField()
-    name = StringField('Name')
-    national_id = StringField('National Id')
+    name = StringField('Name', validators=[Optional()])
+    national_id = StringField('National Id', validators=[Optional()])
+    hospital_number = StringField('Hospital Number', validators=[Optional()])
     birth_year = IntegerField('Year of Birth', validators=[Optional()])
     age = IntegerField('Age', validators=[Optional()])
-    center_id = SelectField('Center')
-    gender = SelectField('Gender', choices=[('', 'Any'), ('M', 'Male'), ('F', 'Female')])
-    phone = StringField('Phone #')
-    address = TextAreaField('Address (e.g. Village, District)')
+    center_id = SelectField('Center', validators=[Optional()])
+    gender = SelectField('Gender', choices=[('', 'Any'), ('M', 'Male'), ('F', 'Female')], validators=[Optional()])
+    phone = StringField('Phone #', validators=[Optional()])
+    address = TextAreaField('Address (e.g. Village, District)', validators=[Optional()])
     next_action = HiddenField('NextAction')
     created_by = HiddenField('Created By')
     created_at = HiddenField('Created At')
@@ -121,18 +127,18 @@ class FollowupForm(EventForm):
                        choices=choice_for_enum(Pain, include_blank=False),
                        coerce=coerce_for_enum(Pain),
                        validators=[DataRequired()])
-    pain_comments = StringField('Pain Description', validators=[Optional()])
+    pain_comments = StringField('Pain Description', validators=[validate_pain_comments])
 
-    mesh_awareness = BooleanField('Aware of Mesh?')
+    mesh_awareness = HiddenField('Aware of Mesh?')
     mesh_awareness_comments = StringField('Mesh Awareness Description', validators=[Optional()])
 
-    infection = BooleanField('Infection?')
+    infection = HiddenField('Infection?')
     infection_comments = StringField('Infection Description', validators=[Optional()])
 
-    seroma = BooleanField('Seroma?')
+    seroma = HiddenField('Seroma?')
     seroma_comments = StringField('Seroma Description', validators=[Optional()])
 
-    numbness = BooleanField('Numbness?')
+    numbness = HiddenField('Numbness?')
     numbness_comments = StringField('Numbness Description', validators=[Optional()])
 
 
@@ -163,9 +169,9 @@ class InguinalMeshHerniaRepairForm(EventForm):
                              validators=[DataRequired()])
     mesh_type = StringField('Mesh Type', validators=[DataRequired()])
     anaesthetic_type = SelectField('Anaesthetic Type',
-                              choices=choice_for_enum(AnestheticType, include_blank=False),
-                              coerce=coerce_for_enum(AnestheticType),
-                              validators=[DataRequired()])
+                                   choices=choice_for_enum(AnestheticType, include_blank=False),
+                                   coerce=coerce_for_enum(AnestheticType),
+                                   validators=[DataRequired()])
     anaesthetic_other = StringField('Anaesthetic Other', validators=[Optional()])
     diathermy_used = HiddenField('Diathermy Used?', validators=[Optional()])
     discharge_date = StringField('Discharge Date')

@@ -22,8 +22,10 @@
                     <tr>
                         <th scope="col">Name</th>
                         <th scope="col">National Id</th>
+                        <th scope="col">Hospital No.</th>
                         <th scope="col">Gender</th>
-                        <th scope="col">Phone</th>
+                        <th scope="col">Phone #1</th>
+                        <th scope="col">Phone #2</th>
                         <th scope="col">Address</th>
                     </tr>
                     </thead>
@@ -32,8 +34,10 @@
                     <tr>
                         <td><a href="{{ url_for('patient', id=result.id) }}">{{ result.name }}</a></td>
                         <td>{{ result.national_id }}</a></td>
+                        <td>{{ result.hospital_number }}</a></td>
                         <td>{{ result.gender }}</td>
-                        <td>{{ result.phone }}</td>
+                        <td>{{ result.phone_1 }}</td>
+                        <td>{{ result.phone_2 }}</td>
                         <td>{{ result.address }}</td>
                     </tr>
                     {% endfor %}

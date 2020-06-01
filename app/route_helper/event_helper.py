@@ -81,13 +81,13 @@ class FollowupEventHelper(EventHelper):
         super().copy_to_event(form, event)
         event.pain = form.pain.data
         event.pain_comments = form.pain_comments.data
-        event.mesh_awareness = form.mesh_awareness.data
+        event.mesh_awareness = strtobool_optional(form.mesh_awareness.data)
         event.mesh_awareness_comments = form.mesh_awareness_comments.data
-        event.infection = form.infection.data
+        event.infection = strtobool_optional(form.infection.data)
         event.infection_comments = form.infection_comments.data
-        event.seroma = form.seroma.data
+        event.seroma = strtobool_optional(form.seroma.data)
         event.seroma_comments = form.seroma_comments.data
-        event.numbness = form.numbness.data
+        event.numbness = strtobool_optional(form.numbness.data)
         event.numbness_comments = form.numbness_comments.data
 
 

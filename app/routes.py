@@ -15,6 +15,8 @@ from app.route_helper.patient_helper import copy_to_patient
 from app.util import restful
 from app.util.filter import like_all
 
+from sqlalchemy import or_
+
 
 @application.before_first_request
 def before_first_request():
@@ -188,12 +190,14 @@ def patient_search():
             Patient.national_id: form.national_id.data,
             Patient.birth_year: form.birth_year.data,
             Patient.gender: form.gender.data,
-            Patient.phone: form.phone.data,
             Patient.address: form.address.data,
         })
 
+        f.append(or_(Patient.phone_1.like('%' + form.phone.data + '%'),
+                     Patient.phone_2.like('%' + form.phone.data + '%'), ))
+
         if form.center_id.data != '':
-            f.append(Patient.center_id == form.center_id.data)
+            f.append(Patient.center_id.is_(form.center_id.data))
 
         patients = db.session.query(Patient).filter(f).order_by(Patient.name).all()
         return render_template('patient_search.html', title='Patient Search', form=form, results=patients)

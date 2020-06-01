@@ -27,10 +27,10 @@
     <fieldset id='pain_comments_fieldset' class="form-group">
         <div class="row">
             <div class="col-2">
-                {{ form.pain_comments.label(class='form-check-label') }}
+                {{ form.pain_comments.label(class='col-form-label') }}
             </div>
             <div class="col-4">
-                {{ form.pain_comments(class='form-check-input') }}
+                {{ form.pain_comments(class='form-control') }}
                 {{ macros.with_errors(form.pain_comments) }}
             </div>
         </div>
@@ -41,6 +41,8 @@
                 {{ form.mesh_awareness.label(class='col-form-label') }}
             </div>
             <div class="col-4">
+                <button id="mesh_awareness_yes_btn" type="button" class="btn">Yes</button>
+                <button id="mesh_awareness_no_btn" type="button" class="btn">No</button>
                 {{ form.mesh_awareness(class='form-control') }}
                 {{ macros.with_errors(form.mesh_awareness) }}
             </div>
@@ -63,6 +65,8 @@
                 {{ form.infection.label(class='col-form-label') }}
             </div>
             <div class="col-4">
+                <button id="infection_yes_btn" type="button" class="btn">Yes</button>
+                <button id="infection_no_btn" type="button" class="btn">No</button>
                 {{ form.infection(class='form-control') }}
                 {{ macros.with_errors(form.infection) }}
             </div>
@@ -85,6 +89,8 @@
                 {{ form.seroma.label(class='col-form-label') }}
             </div>
             <div class="col-4">
+                <button id="seroma_yes_btn" type="button" class="btn">Yes</button>
+                <button id="seroma_no_btn" type="button" class="btn">No</button>
                 {{ form.seroma(class='form-control') }}
                 {{ macros.with_errors(form.seroma) }}
             </div>
@@ -107,6 +113,8 @@
                 {{ form.numbness.label(class='col-form-label') }}
             </div>
             <div class="col-4">
+                <button id="numbness_yes_btn" type="button" class="btn">Yes</button>
+                <button id="numbness_no_btn" type="button" class="btn">No</button>
                 {{ form.numbness(class='form-control') }}
                 {{ macros.with_errors(form.numbness) }}
             </div>
@@ -126,7 +134,7 @@
     {{ macros.with_created_by(form) }}
     <p>{{ form.submit(class='btn btn-primary', onclick="$('#spinner').show()") }}
         {% if mode == 'load' %}
-            <a href="{{ url_for('patient', id=event.patient.id) }}" class="btn btn-secondary">Show Patient</a>
+        <a href="{{ url_for('patient', id=event.patient.id) }}" class="btn btn-secondary">Show Patient</a>
         {% endif %}
         <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
     </p>
