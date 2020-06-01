@@ -47,6 +47,7 @@ class UserEditForm(UserForm):
 
 
 class PatientEditForm(FlaskForm):
+    id = HiddenField('Id')
     name = StringField('Name', validators=[DataRequired()])
     national_id = StringField('National Id')
     birth_year = IntegerField('Year of Birth')
@@ -64,6 +65,7 @@ class PatientEditForm(FlaskForm):
 
 
 class PatientSearchForm(FlaskForm):
+    id = HiddenField()
     name = StringField('Name')
     national_id = StringField('National Id')
     birth_year = IntegerField('Year of Birth', validators=[Optional()])

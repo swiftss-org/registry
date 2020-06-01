@@ -1,6 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
+    {% if form.id.data %}
+    <div class="row">
+        <div class="col-md-auto"><h4>Record New</h4></div>
+        <div class="col-md-auto">
+            <a class="btn btn-primary" href="{{ url_for('event_create', type='Followup') }}" role="button">
+                Out-Patient Follow-Up</a>
+            <a class="btn btn-primary" href="{{ url_for('event_create', type='Followup') }}" role="button">
+                Patient Discharge</a>
+            <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="surgery_dropdown_menu_link"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Hernia Repair
+            </a>
+            <div class="dropdown-menu" aria-labelledby="surgery_dropdown_menu_link">
+                <a class="dropdown-item" href="{{ url_for('event_create', type='InguinalMeshHerniaRepair') }}"
+                   role="button">Inguinal Mesh Hernia Repair</a>
+                <a class="dropdown-item disabled" href="{{ url_for('not_implemented') }}"
+                   role="button">Incisional Hernia Repair</a>
+                <a class="dropdown-item disabled" href="{{ url_for('not_implemented') }}"
+                   role="button">Femoral Hernia Repair</a>
+                <a class="dropdown-item disabled" href="{{ url_for('not_implemented') }}"
+                   role="button">Hiatus Hernia Repair</a>
+                <a class="dropdown-item disabled" href="{{ url_for('not_implemented') }}"
+                   role="button">Umbilical/Periumbilical Hernia Repair</a>
+            </div>
+        </div>
+    </div>
+    <br/>
+    {% endif %}
     <div class="row">
         <div class="col-sm">
             <div class="accordion" id="accordion_patient">
@@ -30,15 +58,6 @@
                 {% endfor %}
             </div>
             {% endif %}
-            <hr/>
-            <p>
-                <a class="btn btn-primary" href="{{ url_for('event_create', type='Followup') }}" role="button">Record a new
-                    Follow-Up</a>
-                <a class="btn btn-primary" href="{{ url_for('event_create', type='InguinalMeshHerniaRepair') }}"
-                   role="button">Record a new Inguinal Mesh Hernia Repair</a>
-                <a class="btn btn-primary" href=""
-                   role="button">Record a new Incisional Hernia Repair</a>
-            </p>
         </div>
     </div>
 </div>
