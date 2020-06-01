@@ -44,5 +44,6 @@ def coerce_for_bool():
     return coerce
 
 
+
 def choice_for_bool():
     return [(True, 'True'), (False, 'False')]

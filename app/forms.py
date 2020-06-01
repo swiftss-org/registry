@@ -2,10 +2,10 @@ from datetime import date
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, \
-    HiddenField, IntegerField, RadioField, DateField
+    HiddenField, IntegerField, DateField
 from wtforms.validators import DataRequired, Optional
 
-from app.models import Cepod, Side, Occurrence, InguinalHerniaType, Complexity, MeshType, AnestheticType, Pain
+from app.models import Cepod, Side, Occurrence, InguinalHerniaType, Complexity, AnestheticType, Pain
 from app.util.form_utils import choice_for_bool, coerce_for_bool, choice_for_enum, coerce_for_enum
 
 
@@ -165,7 +165,7 @@ class InguinalMeshHerniaRepairForm(EventForm):
                               coerce=coerce_for_enum(AnestheticType),
                               validators=[DataRequired()])
     anaesthetic_other = StringField('Anaesthetic Other', validators=[Optional()])
-    diathermy_used = BooleanField('Diathermy Used?')
+    diathermy_used = HiddenField('Diathermy Used?', validators=[Optional()])
     discharge_date = StringField('Discharge Date')
 
     primary_surgeon_id = SelectField('Primary Surgeon', validators=[Optional()])

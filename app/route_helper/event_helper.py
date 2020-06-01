@@ -3,6 +3,7 @@ from wtforms import HiddenField
 from app.forms import FollowupForm, InguinalMeshHerniaRepairForm
 from app.models import Patient, Center, MeshType, User, InguinalMeshHerniaRepair, Followup
 from app.route_helper.choices import id_choices
+from app.util.strtobool import strtobool_optional
 
 
 def find_helper(event):
@@ -114,7 +115,7 @@ class InguinalMeshHerniaRepairEventHelper(EventHelper):
         event.mesh_type = form.mesh_type.data
         event.anaesthetic_type = form.anaesthetic_type.data
         event.anaesthetic_other = form.anaesthetic_other.data
-        event.diathermy_used = form.diathermy_used.data
+        event.diathermy_used = strtobool_optional(form.diathermy_used.data)
         event.primary_surgeon_id = form.primary_surgeon_id.data
         event.secondary_surgeon_id = form.secondary_surgeon_id.data
         event.tertiary_surgeon_id = form.tertiary_surgeon_id.data
