@@ -2,12 +2,12 @@ import enum
 from datetime import datetime, date
 
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Date, Enum, Boolean
-from sqlalchemy.orm import relationship, backref
+from password_strength import PasswordStats
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Date, Enum, Boolean, event
+from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
-from password_strength import PasswordPolicy, PasswordStats
 
-from app import db
+from app import db, model_events
 
 SHORT_TEXT_LENGTH = 60
 LONG_TEXT_LENGTH = 240
@@ -270,6 +270,12 @@ class Event(db.Model, ExtendedBase):
                                                                                        self.center_id)
 
 
+# standard decorator style
+@event.listens_for(db.session, 'transient_to_pending')
+def receive_transient_to_pending(session, instance):
+    model_events.receive_transient_to_pending(session, instance)
+
+
 class InguinalMeshHerniaRepair(Event):
     __tablename__ = 'MeshHerniaRepairs'
 
@@ -330,3 +336,12 @@ class Followup(Event):
     __mapper_args__ = {
         'polymorphic_identity': 'Follow-Up',
     }
+
+
+class PatientDischargeTracker(db.Model, ExtendedBase):
+    __tablename__ = 'PatientDischargeTracker'
+
+    patient_id = Column(ForeignKey('Patients.id'), primary_key=True)
+    patient = relationship(Patient)
+
+    needs_discharge = Column(Boolean, default=False, nullable=False)
