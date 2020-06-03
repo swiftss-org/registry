@@ -8,7 +8,7 @@ from werkzeug.urls import url_parse
 
 from app import db, login, initalise, constants
 from app.forms import LoginForm, PatientSearchForm, PatientEditForm, UserEditForm
-from app.models import User, Patient, Event, Center
+from app.models import User, Patient, Event, Center, PatientDischargeTracker
 from app.route_helper import event_helper
 from app.route_helper.choices import id_choices
 from app.route_helper.patient_helper import copy_to_patient
@@ -50,7 +50,11 @@ def error(e):
 @application.route('/index', methods=['GET'])
 @login_required
 def index():
-    return render_template('index.html', title='Index')
+    results = []
+    for pdt in db.session.query(PatientDischargeTracker).order_by(PatientDischargeTracker.event_date).all():
+        results.append(pdt.patient)
+
+    return render_template('index.html', title='Index', results=results)
 
 
 @application.route('/login', methods=['GET', 'POST'])
@@ -211,7 +215,7 @@ def patient_search():
 @login_required
 def patient_create():
     patient = Patient()
-    events = db.session.query(Event).filter(Event.patient_id == patient.id).all()
+    events = db.session.query(Event).filter(Event.patient_id == patient.id).order_by(Event.date).all()
 
     form = PatientEditForm(obj=patient)
     form.center_id.choices = id_choices(db.session, Center, include_empty=True)
@@ -242,7 +246,7 @@ def patient(id):
     if patient is None:
         return error('Unable to find patient with id {}.'.format(id))
 
-    events = db.session.query(Event).filter(Event.patient_id == patient.id).all()
+    events = db.session.query(Event).filter(Event.patient_id == patient.id).order_by(Event.date).all()
 
     form = PatientEditForm(obj=patient)
     form.center_id.choices = id_choices(db.session, Center, include_empty=True)
@@ -331,12 +335,12 @@ def _event_create(type, inline):
 
 @application.route('/prefetch/patients', methods=['GET'])
 def patients_prefetch():
-    return restful.json_dumps(db.session.query(Patient.name).all())
+    return restful.json_dumps(db.session.query(Patient.name).order_by(Patient.name).all())
 
 
 @application.route('/prefetch/centers', methods=['GET'])
 def centers_prefetch():
-    return restful.json_dumps(db.session.query(Center.name).all())
+    return restful.json_dumps(db.session.query(Center.name).order_by(Center.name).all())
 
 
 def _field_errors(form):

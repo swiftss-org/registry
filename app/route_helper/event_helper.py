@@ -1,7 +1,7 @@
 from wtforms import HiddenField
 
-from app.forms import FollowupForm, InguinalMeshHerniaRepairForm
-from app.models import Patient, Center, MeshType, User, InguinalMeshHerniaRepair, Followup
+from app.forms import FollowupForm, InguinalMeshHerniaRepairForm, DischargeForm
+from app.models import Patient, Center, MeshType, User, InguinalMeshHerniaRepair, Followup, Discharge
 from app.route_helper.choices import id_choices
 from app.util.strtobool import strtobool_optional
 
@@ -12,6 +12,8 @@ def find_helper(event):
     else:
         name = type(event).__name__
 
+    if name == 'Discharge':
+        return DischargeEventHelper()
     if name == 'Followup':
         return FollowupEventHelper()
     elif name == 'InguinalMeshHerniaRepair':
@@ -58,6 +60,20 @@ class EventHelper:
 
     def form(self, event, inline):
         raise NotImplementedError()
+
+
+class DischargeEventHelper(EventHelper):
+    def clazz(self):
+        return Discharge
+
+    def form(self, event, inline):
+        return DischargeForm(obj=event, inline=inline)
+
+    def populate_choices(self, session, form):
+        super().populate_choices(session, form)
+
+    def copy_to_event(self, form, event):
+        super().copy_to_event(form, event)
 
 
 class FollowupEventHelper(EventHelper):

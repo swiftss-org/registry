@@ -5,10 +5,10 @@
     <div class="row">
         <div class="col-md-auto"><h4>Record New</h4></div>
         <div class="col-md-auto">
+            <a class="btn btn-primary" href="{{ url_for('event_create', type='Discharge') }}" role="button">
+                Patient Discharge</a>
             <a class="btn btn-primary" href="{{ url_for('event_create', type='Followup') }}" role="button">
                 Out-Patient Follow-Up</a>
-            <a class="btn btn-primary" href="{{ url_for('event_create', type='Followup') }}" role="button">
-                Patient Discharge</a>
             <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="surgery_dropdown_menu_link"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Hernia Repair

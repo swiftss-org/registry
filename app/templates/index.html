@@ -57,8 +57,18 @@
                     </ul>
                 </div>
             </div>
-
         </div>
     </div>
+    {% if results and results|length > 0 %}
+    <hr/>
+    <div class="row">
+        <div class="col-lg">
+            <h2>Patients Pending Discharge</h2>
+            <div>
+                {% include 'patient_table.html' %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

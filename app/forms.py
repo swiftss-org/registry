@@ -7,7 +7,8 @@ from wtforms.validators import DataRequired, Optional
 
 from app.models import Cepod, Side, Occurrence, InguinalHerniaType, Complexity, AnestheticType, Pain
 from app.util.form_utils import choice_for_bool, coerce_for_bool, choice_for_enum, coerce_for_enum
-from app.validators import validate_pain_comments
+from app.validators import validate_pain_comments, validate_aware_of_mesh, validate_infection, validate_seroma, \
+    validate_numbness
 
 
 def _readonly_render_kw(readonly):
@@ -116,6 +117,12 @@ class EventForm(FlaskForm):
     submit = SubmitField('Save Changes')
 
 
+class DischargeForm(EventForm):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+
 class FollowupForm(EventForm):
 
     def __init__(self, **kwargs):
@@ -130,16 +137,16 @@ class FollowupForm(EventForm):
     pain_comments = StringField('Pain Description', validators=[validate_pain_comments])
 
     mesh_awareness = HiddenField('Aware of Mesh?')
-    mesh_awareness_comments = StringField('Mesh Awareness Description', validators=[Optional()])
+    mesh_awareness_comments = StringField('Mesh Awareness Description', validators=[validate_aware_of_mesh])
 
     infection = HiddenField('Infection?')
-    infection_comments = StringField('Infection Description', validators=[Optional()])
+    infection_comments = StringField('Infection Description', validators=[validate_infection])
 
     seroma = HiddenField('Seroma?')
-    seroma_comments = StringField('Seroma Description', validators=[Optional()])
+    seroma_comments = StringField('Seroma Description', validators=[validate_seroma])
 
     numbness = HiddenField('Numbness?')
-    numbness_comments = StringField('Numbness Description', validators=[Optional()])
+    numbness_comments = StringField('Numbness Description', validators=[validate_numbness])
 
 
 class InguinalMeshHerniaRepairForm(EventForm):

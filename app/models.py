@@ -1,13 +1,14 @@
 import enum
+import logging
 from datetime import datetime, date
 
 from flask_login import UserMixin
 from password_strength import PasswordStats
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Date, Enum, Boolean, event
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Date, Enum, Boolean, event, func, and_
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app import db, model_events
+from app import db
 
 SHORT_TEXT_LENGTH = 60
 LONG_TEXT_LENGTH = 240
@@ -256,6 +257,8 @@ class Event(db.Model, ExtendedBase):
     updated_by_id = Column(ForeignKey('Users.id'), nullable=False)
     updated_by = relationship(User, foreign_keys=[updated_by_id])
 
+    requires_discharge = False
+
     __mapper_args__ = {
         'version_id_col': version_id,
         'polymorphic_on': type,
@@ -268,12 +271,6 @@ class Event(db.Model, ExtendedBase):
                                                                                        self.date.isoformat(),
                                                                                        self.patient_id,
                                                                                        self.center_id)
-
-
-# standard decorator style
-@event.listens_for(db.session, 'transient_to_pending')
-def receive_transient_to_pending(session, instance):
-    model_events.receive_transient_to_pending(session, instance)
 
 
 class InguinalMeshHerniaRepair(Event):
@@ -305,6 +302,9 @@ class InguinalMeshHerniaRepair(Event):
     additional_procedure = Column(String(LONG_TEXT_LENGTH), nullable=True)
     complications = Column(String(LONG_TEXT_LENGTH), nullable=True)
 
+    requires_discharge = True
+    INGUINAL_MESH_HERNIA_REPAIR = 'Inguinal Mesh Hernia Repair'
+
     __mapper_args__ = {
         'polymorphic_identity': 'Mesh Hernia Repair',
     }
@@ -333,8 +333,20 @@ class Followup(Event):
     numbness = Column(Boolean, nullable=True)
     numbness_comments = Column(String(LONG_TEXT_LENGTH), nullable=True)
 
+    FOLLOWUP = "Follow-Up"
     __mapper_args__ = {
-        'polymorphic_identity': 'Follow-Up',
+        'polymorphic_identity': FOLLOWUP,
+    }
+
+
+class Discharge(Event):
+    __tablename__ = 'Discharges'
+
+    id = Column(Integer, ForeignKey('Events.id'), primary_key=True)
+
+    DISCHARGE = 'Discharge'
+    __mapper_args__ = {
+        'polymorphic_identity': DISCHARGE,
     }
 
 
@@ -344,4 +356,51 @@ class PatientDischargeTracker(db.Model, ExtendedBase):
     patient_id = Column(ForeignKey('Patients.id'), primary_key=True)
     patient = relationship(Patient)
 
-    needs_discharge = Column(Boolean, default=False, nullable=False)
+    event_date = Column(Date, nullable=False)
+
+
+@event.listens_for(db.session, 'before_flush')
+def receive_before_flush(session, flush_context, instances):
+    for o in session.new:
+        _before_flush(session, o)
+
+    for o in session.dirty:
+        _before_flush(session, o)
+
+
+def _before_flush(session, instance):
+    if isinstance(instance, Discharge):
+        track = session.query(PatientDischargeTracker).filter(
+            PatientDischargeTracker.patient_id == instance.patient_id).first()
+
+        # If patient is tracked and event date is prior to the discharge then stop tracking
+        if track and track.event_date <= instance.date:
+            session.delete(track)
+
+        if not track:
+            last_event_date = session.query(Event.date, func.max(Event.date)).filter(
+                and_(Event.type.in_(InguinalMeshHerniaRepair.INGUINAL_MESH_HERNIA_REPAIR),
+                     Event.patient_id == instance.patient_id)).scalar()
+
+            # If patient is not tracked BUT there is an trackable event after the discharge date then start tracking
+            if last_event_date > instance.date:
+                track = PatientDischargeTracker()
+            track.patient_id = instance.patient_id
+            track.event_date = instance.date
+            session.add(track)
+    elif isinstance(instance, Event):
+        last_discharge_date = session.query(Discharge.date, func.max(Discharge.date)).filter(
+            Discharge.patient_id == instance.patient_id).scalar()
+
+        track = session.query(PatientDischargeTracker).filter(
+            PatientDischargeTracker.patient_id == instance.patient_id).first()
+
+        if not last_discharge_date or last_discharge_date < instance.date:
+            if track:
+                track.event_date = max(instance.date, track.event_date)
+                session.add(track)
+            else:
+                track = PatientDischargeTracker()
+                track.patient_id = instance.patient_id
+                track.event_date = instance.date
+                session.add(track)
