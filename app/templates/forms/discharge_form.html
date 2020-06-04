@@ -1,10 +1,55 @@
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     {% include 'forms/event_form.html' %}
+
+    {{ macros.with_tristate_bool_comment_group(form.perioperative_complication,
+    form.perioperative_complication_comments, 'perioperative_complication') }}
+
+    <fieldset class="form-group">
+        <div class="row">
+            <div class="col-2">
+                {{ form.post_operative_antibiotics.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                <button id="post_operative_antibiotics_yes_btn" type="button" class="btn">Yes</button>
+                <button id="post_operative_antibiotics_no_btn" type="button" class="btn">No</button>
+                {{ macros.with_errors(form.post_operative_antibiotics) }}
+            </div>
+        </div>
+    </fieldset>
+    <fieldset id='post_operative_antibiotics_comments_fieldset' class="form-group">
+        <div class="row">
+            <div class="col-2">
+                {{ form.post_operative_antibiotics_comments.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.post_operative_antibiotics_comments(class='form-control') }}
+                {{ macros.with_errors(form.post_operative_antibiotics_comments) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2">
+                {{ form.post_operative_antibiotics_iv_days.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.post_operative_antibiotics_iv_days(class='form-control') }}
+                {{ macros.with_errors(form.post_operative_antibiotics_iv_days) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2">
+                {{ form.post_operative_antibiotics_oral_days.label(class='col-form-label') }}
+            </div>
+            <div class="col-4">
+                {{ form.post_operative_antibiotics_oral_days(class='form-control') }}
+                {{ macros.with_errors(form.post_operative_antibiotics_oral_days) }}
+            </div>
+        </div>
+    </fieldset>
     {{ macros.with_created_by(form) }}
     {% if not inline %}
-        <p>{{ form.submit(class='btn btn-primary', onclick="$('#spinner').show()") }}
-            <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
-        </p>
+    <p>{{ form.submit(class='btn btn-primary', onclick="$('#spinner').show()") }}
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+    </p>
     {% endif %}
 </form>

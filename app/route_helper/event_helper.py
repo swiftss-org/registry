@@ -74,6 +74,13 @@ class DischargeEventHelper(EventHelper):
 
     def copy_to_event(self, form, event):
         super().copy_to_event(form, event)
+        event.perioperative_complication = strtobool_optional(form.perioperative_complication.data)
+        event.perioperative_complication_comments = form.perioperative_complication_comments.data
+
+        event.post_operative_antibiotics = strtobool_optional(form.post_operative_antibiotics.data)
+        event.post_operative_antibiotics_comments = form.post_operative_antibiotics_comments.data
+        event.post_operative_antibiotics_iv_days = form.post_operative_antibiotics_iv_days.data
+        event.post_operative_antibiotics_oral_days = form.post_operative_antibiotics_oral_days.data
 
 
 class FollowupEventHelper(EventHelper):

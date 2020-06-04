@@ -14,16 +14,4 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     toggle_btns("#numbness", "#numbness_yes_btn", "#numbness_no_btn")
     show_hide('#numbness', '#numbness_comments_fieldset', is_true, 'toggle');
-
-    $('#date').datepicker(
-        {
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            assumeNearbyYear: true,
-            endDate: '0d',
-            todayHighlight: true,
-            todayBtn: true
-        });
-
-    $('#spinner').hide();
 });

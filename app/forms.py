@@ -2,13 +2,14 @@ from datetime import date
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, \
-    HiddenField, IntegerField, DateField, ValidationError
+    HiddenField, IntegerField, DateField
 from wtforms.validators import DataRequired, Optional
 
 from app.models import Cepod, Side, Occurrence, InguinalHerniaType, Complexity, AnestheticType, Pain
 from app.util.form_utils import choice_for_bool, coerce_for_bool, choice_for_enum, coerce_for_enum
 from app.validators import validate_pain_comments, validate_aware_of_mesh, validate_infection, validate_seroma, \
-    validate_numbness
+    validate_numbness, validate_perioperative_complication, validate_post_operative_antibiotics, \
+    validate_antibiotics_iv_days, validate_antibiotics_oral_days
 
 
 def _readonly_render_kw(readonly):
@@ -122,6 +123,18 @@ class DischargeForm(EventForm):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+    perioperative_complication = HiddenField('Perioperative Complication?')
+    perioperative_complication_comments = StringField('Perioperative Complication Description',
+                                                      validators=[validate_perioperative_complication])
+
+    post_operative_antibiotics = HiddenField('Post-Operative Antibiotics?')
+    post_operative_antibiotics_comments = StringField('Post-Operative Antibiotics Description',
+                                                      validators=[validate_post_operative_antibiotics])
+    post_operative_antibiotics_iv_days = IntegerField('IV antibiotics for # days',
+                                                      validators=[Optional(), validate_antibiotics_iv_days])
+    post_operative_antibiotics_oral_days = IntegerField('Oral antibiotics for # days',
+                                                        validators=[Optional(), validate_antibiotics_oral_days])
+
 
 class FollowupForm(EventForm):
 
@@ -181,7 +194,6 @@ class InguinalMeshHerniaRepairForm(EventForm):
                                    validators=[DataRequired()])
     anaesthetic_other = StringField('Anaesthetic Other', validators=[Optional()])
     diathermy_used = HiddenField('Diathermy Used?', validators=[Optional()])
-    discharge_date = StringField('Discharge Date')
 
     primary_surgeon_id = SelectField('Primary Surgeon', validators=[Optional()])
     secondary_surgeon_id = SelectField('Secondary Surgeon', validators=[Optional()])

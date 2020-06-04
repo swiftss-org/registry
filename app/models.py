@@ -344,6 +344,14 @@ class Discharge(Event):
 
     id = Column(Integer, ForeignKey('Events.id'), primary_key=True)
 
+    perioperative_complication = Column(Boolean, nullable=True)
+    perioperative_complication_comments = Column(String(LONG_TEXT_LENGTH), nullable=True)
+
+    post_operative_antibiotics = Column(Boolean, nullable=True)
+    post_operative_antibiotics_comments = Column(String(LONG_TEXT_LENGTH), nullable=True)
+    post_operative_antibiotics_iv_days = Column(Integer, nullable=True)
+    post_operative_antibiotics_oral_days = Column(Integer, nullable=True)
+
     DISCHARGE = 'Discharge'
     __mapper_args__ = {
         'polymorphic_identity': DISCHARGE,
@@ -383,11 +391,11 @@ def _before_flush(session, instance):
                      Event.patient_id == instance.patient_id)).scalar()
 
             # If patient is not tracked BUT there is an trackable event after the discharge date then start tracking
-            if last_event_date > instance.date:
+            if last_event_date and last_event_date > instance.date:
                 track = PatientDischargeTracker()
-            track.patient_id = instance.patient_id
-            track.event_date = instance.date
-            session.add(track)
+                track.patient_id = instance.patient_id
+                track.event_date = instance.date
+                session.add(track)
     elif isinstance(instance, Event):
         last_discharge_date = session.query(Discharge.date, func.max(Discharge.date)).filter(
             Discharge.patient_id == instance.patient_id).scalar()

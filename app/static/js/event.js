@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
             autoclose: true,
         });
     }
+
+    $('#spinner').hide();
 });
 
 function is_checked(element) {
