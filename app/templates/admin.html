@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block head %}
+{% endblock %}
+{% block title %}Episode{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg">
+            <h1>{{ title }}</h1>
+            <hr/>
+            {% include 'forms/admin_form.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+{% endblock %}

@@ -1,0 +1,41 @@
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.name.label(class='col-form-label') }}<br/>
+        {{ form.name(class='form-control', disabled=edit_disabled) }}
+        {{ macros.with_errors(form.name) }}
+    </div>
+    <div class="form-group">
+        {{ form.email.label(class='col-form-label') }}<br/>
+        {{ form.email(class='form-control', disabled=edit_disabled) }}
+        {{ macros.with_errors(form.email) }}
+    </div>
+    <div class="form-group">
+        {{ form.center_id.label(class='col-form-label') }}<br/>
+        {{ form.center_id(class='form-control', disabled=edit_disabled) }}
+        {{ macros.with_errors(form.email) }}
+    </div>
+    <div class="form-group">
+        {{ form.current_password.label(class='col-form-label') }}<br/>
+        {{ form.current_password(class='form-control', disabled=edit_disabled) }}
+        {{ macros.with_errors(form.current_password) }}
+    </div>
+    <div class="form-group">
+        {{ form.new_password.label(class='col-form-label') }}<br/>
+        {{ form.new_password(class='form-control', disabled=edit_disabled) }}
+        {{ macros.with_errors(form.new_password) }}
+    </div>
+    <div class="form-group">
+        {{ form.verify_password.label(class='col-form-label') }}<br/>
+        {{ form.verify_password(class='form-control', disabled=edit_disabled) }}
+        {{ macros.with_errors(form.verify_password) }}
+    </div>
+    <div class="form-group">
+        {{ form.active.label(class='col-form-label') }}<br/>
+        {{ form.active(class='form-control', disabled=edit_disabled) }}
+        {{ macros.with_errors(form.active) }}
+    </div>
+    <p>
+        {{ form.submit(class='btn btn-primary') }}
+    </p>
+</form>

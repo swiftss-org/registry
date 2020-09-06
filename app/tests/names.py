@@ -136,5 +136,5 @@ def address() -> str:
     )
 
 
-def hospital(city: str) -> str:
-    return '{} Hospital'.format(city)
+def center(city: str) -> str:
+    return '{} Medical Center'.format(city)

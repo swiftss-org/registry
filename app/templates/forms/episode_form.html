@@ -16,9 +16,9 @@
         {{ macros.with_errors(form.patient_id) }}
     </div>
     <div class="form-group">
-        {{ form.hospital_id.label(class='col-form-label') }}<br/>
-        {{ form.hospital_id(class='form-control', disabled=edit_disabled) }}
-        {{ macros.with_errors(form.hospital_id) }}
+        {{ form.center_id.label(class='col-form-label') }}<br/>
+        {{ form.center_id(class='form-control', disabled=edit_disabled) }}
+        {{ macros.with_errors(form.center_id) }}
     </div>
     <div>
         <label class="col-form-label">Attendees</label><br/>
@@ -34,13 +34,14 @@
             </thead>
             <tbody>
             {% for a in episode.attendees %}
-            <tr>
+            <tr id=attendee_row_{{ a.user.id }}>
                 <td>
-                    <button type="button" class="btn btn-danger">X</button>
+                    <button type="button" class="btn btn-danger" onclick="removeAttendee({{ a.user.id }})">X</button>
                 </td>
                 <td style="display:none;">{{ a.user.id }}</td>
                 <td>{{ a.user.name }}</td>
-                <td>{{ a.comments }}</td>
+                <td><input id="attendee_comments_{{ a.user.id }}" class="form-control" type="text" placeholder=""
+                           value="{{ a.comments }}"></td>
             </tr>
             {% endfor %}
             <tbody>
@@ -58,74 +59,70 @@
         {{ form.surgery_id.label(class='col-form-label') }}
     <hr/>
     {{ macros.with_errors(form.surgery_id) }}
-    {% if episode.surgery %}
+    {% if surgery %}
     <table class="table table-striped">
         <tbody>
         <tr>
             <td>Cepod</td>
-            <td>{{ episode.surgery.cepod.name }}</td>
+            <td>{{ surgery.cepod.name }}</td>
         </tr>
         <tr>
             <td>Date of discharge</td>
-            <td>{{ episode.surgery.date_of_discharge }}</td>
+            <td>{{ surgery.date_of_discharge }}</td>
         </tr>
         <tr>
             <td>Procedure</td>
-            <td>{{ episode.surgery.procedure.name }}</td>
+            <td>{{ surgery.procedure.name }}</td>
         </tr>
         <tr>
             <td>Side</td>
-            <td>{{ episode.surgery.side.name }}</td>
+            <td>{{ surgery.side.name }}</td>
         </tr>
         <tr>
             <td>Primary</td>
-            <td>{{ episode.surgery.primary }}</td>
+            <td>{{ surgery.primary }}</td>
         </tr>
         <tr>
             <td>Type</td>
-            <td>{{ episode.surgery.type.name }}</td>
+            <td>{{ surgery.type.name }}</td>
         </tr>
         <tr>
             <td>Additional Procedure</td>
-            <td>{{ episode.surgery.additional_procedure }}</td>
+            <td>{{ surgery.additional_procedure }}</td>
         </tr>
         <tr>
             <td>Antibiotics</td>
-            <td>{{ episode.surgery.antibiotics }}</td>
+            <td>{{ surgery.antibiotics }}</td>
         </tr>
         <tr>
             <td>RV Date</td>
-            <td>{{ episode.surgery.opd_rv_date }}</td>
+            <td>{{ surgery.opd_rv_date }}</td>
         </tr>
         <tr>
             <td>OPD Pain</td>
-            <td>{{ episode.surgery.opd_pain }}</td>
+            <td>{{ surgery.opd_pain }}</td>
         </tr>
         <tr>
             <td>OPD Numbness</td>
-            <td>{{ episode.surgery.opd_numbness }}</td>
+            <td>{{ surgery.opd_numbness }}</td>
         </tr>
         <tr>
             <td>OPD Infection</td>
-            <td>{{ episode.surgery.opd_infection }}</td>
+            <td>{{ surgery.opd_infection }}</td>
         </tr>
         <tr>
             <td>OPD Comments</td>
-            <td>{{ episode.surgery.opd_comments }}</td>
+            <td>{{ surgery.opd_comments }}</td>
         </tr>
         <tr>
             <td>General Comments</td>
-            <td>{{ episode.surgery.comments }}</td>
+            <td>{{ surgery.comments }}</td>
         </tr>
         <tbody>
     </table>
-    <a href="{{ url_for('surgery', id=episode.surgery.id) }}" class="btn btn-primary">Edit Surgery Details</a>
+    <a href="{{ url_for('surgery', id=surgery.id) }}" class="btn btn-primary">Edit Surgery Details</a>
     {% else %}
-        {% if episode.id %}
-            <a href="{{ url_for('surgery_create', episode_id=episode.id) }}" class="btn btn-primary">Record Surgery Details</a>
-        {% else %}
-            <button class="btn btn-primary" disabled>Record Surgery Details</button>
-        {% endif %}
+    <button class="btn btn-primary" onclick="submit_and_record_surgery()">Record Surgery Details</button>
     {% endif %}
     {{ form.surgery_id(class='form-control', disabled=edit_disabled) }}
     <div>
@@ -156,8 +153,13 @@
         {{ form.comments(class='form-control', disabled=edit_disabled) }}
         {{ macros.with_errors(form.comments) }}
     </div>
+    <div class="form-group">
+        {{ form.next_action(class='form-control') }}
+        {{ macros.with_errors(form.next_action) }}
+    </div>
     {{ macros.with_created_by(form) }}
-    <p>{{ form.submit(class='btn btn-primary') }}
-        <a href="{{ url_for('patient_search') }}" class="btn btn-secondary">Cancel</a>
+    <p>
+        {{ form.submit(class='btn btn-primary') }}
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
     </p>
 </form>

@@ -21,3 +21,45 @@
 {% endif %}
 </p>
 {% endmacro %}
+
+
+{% macro with_form_group(field, element_id) %}
+<fieldset id={{ element_id }} class="form-group">
+    <div class="row">
+        <div class="col-2">
+            {{ field.label(class='col-form-label') }}
+        </div>
+        <div class="col-4">
+            {{ field(class='form-control') }}
+            {{ with_errors(field) }}
+        </div>
+    </div>
+</fieldset>
+{% endmacro %}
+
+{% macro with_tristate_bool_comment_group(bool_field, comment_field, element_id_prefix) %}
+<fieldset class="form-group">
+    <div class="row">
+        <div class="col-2">
+            {{ bool_field.label(class='col-form-label') }}
+        </div>
+        <div class="col-4">
+            <button id="{{ element_id_prefix }}_yes_btn" type="button" class="btn">Yes</button>
+            <button id="{{ element_id_prefix }}_no_btn" type="button" class="btn">No</button>
+            {{ bool_field(class='form-control') }}
+            {{ with_errors(bool_field) }}
+        </div>
+    </div>
+</fieldset>
+<fieldset id='{{ element_id_prefix }}_comments_fieldset' class="form-group">
+    <div class="row">
+        <div class="col-2">
+            {{ comment_field.label(class='col-form-label') }}
+        </div>
+        <div class="col-4">
+            {{ comment_field(class='form-control') }}
+            {{ with_errors(comment_field) }}
+        </div>
+    </div>
+</fieldset>
+{% endmacro %}

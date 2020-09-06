@@ -1,17 +1,26 @@
+import datetime
 import logging
-import json
-from flask import current_app as application, send_file
-from flask import jsonify, request, render_template, flash, redirect, url_for
+
+from flask import current_app as application
+from flask import request, render_template, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user, login_required
-from sqlalchemy import and_
 from werkzeug.urls import url_parse
 
-from app import db, login, reporting, attendees_parser
-from app.dao.dao import Dao
-from app.forms import LoginForm, PatientSearchForm, PatientEditForm, EpisodeEditForm, EpisodeSearchForm, SurgeryForm
-from app.models import User, Patient, Episode, Hospital, Surgery, Procedure
-from app.tests import data_generator
+from app import db, login, initalise, constants
+from app.forms import LoginForm, PatientSearchForm, PatientEditForm, UserEditForm
+from app.models import User, Patient, Event, Center, PatientDischargeTracker
+from app.route_helper import event_helper
+from app.route_helper.choices import id_choices
+from app.route_helper.patient_helper import copy_to_patient
+from app.util import restful
 from app.util.filter import like_all
+
+from sqlalchemy import or_
+
+
+@application.before_first_request
+def before_first_request():
+    initalise.initalise(application)
 
 
 @login.user_loader
@@ -33,10 +42,19 @@ def not_implemented():
     return render_template('not_implemented.html', title='Ooops')
 
 
+@application.route('/error', methods=['GET'])
+def error(e):
+    return render_template('error.html', title='Ooops', e=e)
+
+
 @application.route('/index', methods=['GET'])
 @login_required
 def index():
-    return render_template('index.html', title='Index')
+    results = []
+    for pdt in db.session.query(PatientDischargeTracker).order_by(PatientDischargeTracker.event_date).all():
+        results.append(pdt.patient)
+
+    return render_template('index.html', title='Index', results=results)
 
 
 @application.route('/login', methods=['GET', 'POST'])
@@ -47,8 +65,8 @@ def login():
     form = LoginForm()
 
     if application.config.get('DEFAULT_TEST_ACCOUNT_LOGIN'):
-        form.username.data = data_generator.TEST_ACCOUNT_EMAIL
-        form.password.data = data_generator.TEST_ACCOUNT_PASSWORD
+        form.username.data = constants.TEST_ACCOUNT_EMAIL
+        form.password.data = constants.TEST_ACCOUNT_PASSWORD
 
     if form.validate_on_submit():
         user = db.session.query(User).filter_by(email=form.username.data).first()
@@ -66,285 +84,6 @@ def login():
         return redirect(next_page)
 
     return render_template('login.html', title='Sign In', form=form)
-
-
-@application.route('/patient_search', methods=['GET', 'POST'])
-@login_required
-def patient_search():
-    form = PatientSearchForm()
-    form.hospital_id.choices = _hospital_id_choices(include_empty=True)
-
-    if form.validate_on_submit():
-        f = like_all({
-            Patient.name: form.name.data,
-            Patient.email: form.email.data,
-            Patient.gender: form.gender.data,
-            Patient.phone: form.phone.data,
-            Patient.address: form.address.data,
-        })
-
-        if form.hospital_id.data != '':
-            f.append(Patient.hospital_id == form.hospital_id.data)
-
-        patients = db.session.query(Patient).filter(f).order_by(Patient.name).all()
-        return render_template('patient_search.html', title='Patient Search', form=form, results=patients)
-
-    return render_template('patient_search.html', title='Patient Search', form=form)
-
-
-@application.route('/patient/create', methods=['GET', 'POST'])
-@login_required
-def patient_create():
-    patient = Patient()
-    episodes = []
-
-    form = PatientEditForm(obj=patient)
-    form.hospital_id.choices = _hospital_id_choices()
-
-    if form.validate_on_submit():
-        patient.name = form.name.data
-        patient.email = form.email.data
-        patient.hospital_id = form.hospital_id.data
-        patient.gender = form.gender.data
-        patient.phone1 = form.phone.data
-        patient.address = form.address.data
-
-        patient.created_by = current_user
-        patient.updated_by = current_user
-
-        db.session.add(patient)
-        db.session.commit()
-        flash('New patient details for {} have been registered.'.format(patient.name))
-        return redirect(url_for('patient', id=patient.id))
-
-    return render_template('patient.html', title='Register New Patient', form=form, episodes=episodes)
-
-
-@application.route('/patient/<int:id>', methods=['GET', 'POST'])
-@login_required
-def patient(id):
-    patient = db.session.query(Patient).filter(Patient.id == id).first()
-    episodes = db.session.query(Episode).filter(Episode.patient_id == patient.id).all()
-
-    form = PatientEditForm(obj=patient)
-    form.hospital_id.choices = _hospital_id_choices()
-
-    if form.validate_on_submit():
-        patient.name = form.name.data
-        patient.email = form.email.data
-        patient.hospital_id = form.hospital_id.data
-        patient.gender = form.gender.data
-        patient.phone1 = form.phone.data
-        patient.address = form.address.data
-        patient.updated_by = current_user
-
-        db.session.commit()
-
-        flash('Patient details have been updated.')
-        return redirect(url_for('patient', id=patient.id))
-
-    return render_template('patient.html', title='Patient Details', form=form, episodes=episodes)
-
-
-@application.route('/episode/<int:id>', methods=['GET', 'POST'])
-@login_required
-def episode(id):
-    episode = db.session.query(Episode).filter(Episode.id == id).first()
-
-    form = EpisodeEditForm(obj=episode)
-    form.patient_id.disabled = True
-    form.hospital_id.choices = _hospital_id_choices()
-    form.patient_id.choices = _patient_id_choices()
-    form.attendee_id.choices = _attendee_id_choices()
-
-    if form.validate_on_submit():
-        episode.episode_type = form.episode_type.data
-        episode.date = form.date.data
-        episode.patient_id = form.patient_id.data
-        episode.hospital_id = form.hospital_id.data
-        episode.surgery_id = form.surgery_id.data
-        episode.comments = form.comments.data
-        episode.updated_by = current_user
-
-        db.session.commit()
-
-        flash('Episode details have been updated.')
-        return redirect(url_for('episode', id=episode.id))
-
-    return render_template('episode.html', title='Episode Details', form=form, episode=episode)
-
-
-@application.route('/episode_search', methods=['GET', 'POST'])
-@login_required
-def episode_search():
-    form = EpisodeSearchForm()
-    form.patient_id.disabled = False
-    form.hospital_id.choices = _hospital_id_choices(include_empty=True)
-    form.patient_id.choices = _patient_id_choices(include_empty=True)
-    form.attendee_id.choices = _attendee_id_choices()
-
-    if form.is_submitted():
-        filter = []
-        if form.date.data:
-            filter.append(Episode.date == form.date.data)
-        if form.episode_type.data:
-            filter.append(Episode.episode_type == form.episode_type.data)
-        if form.hospital_id.data:
-            filter.append(Episode.hospital_id == form.hospital_id.data)
-        if form.patient_id.data:
-            filter.append(Episode.patient_id == form.patient_id.data)
-
-        episodes = db.session.query(Episode).filter(and_(*filter)).order_by(Episode.date).all()
-        return render_template('episode_search.html',
-                               title='Episode Search',
-                               form=form,
-                               results=episodes,
-                               edit_disabled=True)
-
-    return render_template('episode_search.html', title='Episode Search', form=form, edit_disabled=True)
-
-
-@application.route('/episode_create', methods=['GET', 'POST'])
-@login_required
-def episode_create():
-    episode = Episode()
-    form = EpisodeEditForm(obj=episode)
-    form.hospital_id.choices = _hospital_id_choices()
-    form.patient_id.choices = _patient_id_choices()
-    form.attendee_id.choices = _attendee_id_choices()
-
-    if form.validate_on_submit():
-        episode.episode_type = form.episode_type.data
-        episode.date = form.date.data
-        episode.patient_id = form.patient_id.data
-        episode.hospital_id = form.hospital_id.data
-        episode.surgery_id = form.surgery_id.data
-        episode.comments = form.comments.data
-
-        episode.attendees = attendees_parser.from_json(form.attendees.data, episode.id)
-
-        episode.created_by = current_user
-        episode.updated_by = current_user
-
-        db.session.add(episode)
-        db.session.commit()
-
-        flash('Episode details have been recorded.')
-        return redirect(url_for('episode', id=episode.id))
-
-    return render_template('episode.html', title='Record Episode Details',
-                           form=form,
-                           episode=episode,
-                           edit_disabled=False)
-
-
-@application.route('/surgery/<int:id>', methods=['GET', 'POST'])
-@login_required
-def surgery(id):
-    surgery = db.session.query(Surgery).filter(Surgery.id == id).first()
-    form = SurgeryForm(obj=surgery)
-    form.procedure_id.choices = _procedure_id_choices()
-
-    if form.validate_on_submit():
-        surgery.cepod = form.cepod.data
-        surgery.date_of_discharge = form.date_of_discharge.data
-        surgery.side = form.side.data
-        surgery.primary = form.primary.data
-        surgery.type = form.type.data
-        surgery.additional_procedure = form.additional_procedure.data
-        surgery.antibiotics = form.antibiotics.data
-        surgery.comments = form.comments.data
-        surgery.opd_rv_date = form.opd_rv_date.data
-        surgery.opd_pain = form.opd_pain.data
-        surgery.opd_numbness = form.opd_numbness.data
-        surgery.opd_infection = form.opd_infection.data
-        surgery.opd_comments = form.opd_comments.data
-
-        episode.updated_by = current_user
-
-        db.session.commit()
-
-        flash('Surgery details have been updated.')
-        return redirect(url_for('surgery', id=surgery.id))
-
-    return render_template('surgery.html', title='Surgery Details', form=form, surgery=surgery)
-
-
-@application.route('/surgery_create/<int:episode_id>', methods=['GET', 'POST'])
-@login_required
-def surgery_create(episode_id):
-    procedure_id_choices = _procedure_id_choices()
-
-    surgery = Surgery()
-    episode = db.session.query(Episode).filter(Episode.id == episode_id).first()
-
-    if episode is None:
-        raise ValueError('Unable to find an episode with id {}'.format(episode_id))
-
-    surgery.episode = episode
-    episode.surgery = surgery
-
-    form = SurgeryForm(obj=surgery)
-    form.procedure_id.choices = procedure_id_choices
-
-    if form.validate_on_submit():
-        surgery.procedure_id = form.procedure_id.data
-        surgery.cepod = form.cepod.data
-        surgery.date_of_discharge = form.date_of_discharge.data
-        surgery.side = form.side.data
-        surgery.primary = form.primary.data
-        surgery.type = form.type.data
-        surgery.additional_procedure = form.additional_procedure.data
-        surgery.antibiotics = form.antibiotics.data
-        surgery.comments = form.comments.data
-        surgery.opd_rv_date = form.opd_rv_date.data
-        surgery.opd_pain = form.opd_pain.data
-        surgery.opd_numbness = form.opd_numbness.data
-        surgery.opd_infection = form.opd_infection.data
-        surgery.opd_comments = form.opd_comments.data
-
-        surgery.created_by = current_user
-        surgery.updated_by = current_user
-
-        db.session.commit()
-
-        flash('Surgery details have been updated.')
-        return redirect(url_for('surgery', id=surgery.id))
-
-    return render_template('surgery.html', title='Surgery Details', form=form, surgery=surgery)
-
-
-@application.route('/typeahead/patients', methods=['GET'])
-@login_required
-def typeahead_patients():
-    names = db.session.query(Patient.name).all()
-    return jsonify(names)
-
-
-@application.route('/report', methods=['GET'])
-@login_required
-def report_index():
-    return render_template('report.html', title='Reporting')
-
-
-@application.route('/report/<string:report_name>', methods=['GET', 'POST'])
-@login_required
-def report(report_name):
-    path = reporting.to_excel(_run_report(report_name))
-    return send_file(filename_or_fp=path,
-                     mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                     attachment_filename=report_name + '.xlsx',
-                     as_attachment=True)
-
-
-def _run_report(report_name):
-    if report_name.lower() == 'patient':
-        patients = db.session.query(Patient).order_by(Patient.name).all()
-        d = reporting.patients_as_dict(patients)
-    elif report_name.lower() == 'episode':
-        episodes = db.session.query(Episode).order_by(Episode.date).all()
-        d = reporting.episodes_as_dict(episodes)
-    return d
 
 
 @application.route('/logout')
@@ -370,44 +109,238 @@ def health_check():
         raise e
 
 
-@application.route('/thmr/data/<string:entity_name>', methods=['GET'])
-def get_entity(entity_name):
-    dao = Dao.find_dao(application.database.create_session(), entity_name)
+@application.route('/user/self', methods=['GET', 'POST'])
+@login_required
+def user_self():
+    return redirect(url_for('user', id=current_user.id))
 
-    if request.args.get('flat') is not None:
-        return jsonify(restful.all_as_list(dao.find_all()))
+
+@application.route('/user/<int:id>', methods=['GET', 'POST'])
+@login_required
+def user(id):
+    user = db.session.query(User).filter(User.id == id).first()
+    form = UserEditForm(obj=user)
+    form.center_id.choices = id_choices(db.session, Center, include_empty=True)
+
+    if form.validate_on_submit():
+        if not current_user.check_password(form.current_password.data):
+            flash('Unable to save changes as current password is not correct!'.format(user.name))
+            return redirect(url_for('user', id=user.id))
+
+        user.name = form.name.data
+        user.email = form.email.data
+        user.active = form.active.data
+
+        if len(form.new_password.data) > 0:
+            if form.new_password.data != form.verify_password.data:
+                flash('Unable to save changes as passwords for not match for {}!'.format(user.name))
+                return render_template('user_edit.html', title='Register New User', form=form, edit_disabled=False)
+
+            minimum_password_strength = application.config.get('MINIMUM_PASSWORD_STRENGTH', 0.3)
+            if user.check_password_strength(form.new_password.data) < minimum_password_strength:
+                flash('Unable to save changes as password is not strong enough for {}!'.format(user.name))
+                return render_template('user_edit.html', title='Register New User', form=form, edit_disabled=False)
+
+            user.set_password(form.new_password.data)
+
+        db.session.commit()
+
+        flash('User details for {} have been updated.'.format(user.name))
+        return redirect(url_for('user', id=user.id))
+
+    return render_template('user_edit.html', title='User Details', form=form, edit_disabled=False)
+
+
+@application.route('/user/create', methods=['GET', 'POST'])
+def user_create():
+    user = User()
+    form = UserEditForm(obj=user)
+    form.center_id.choices = id_choices(db.session, Center, include_empty=True)
+
+    if form.validate_on_submit():
+        user.name = form.name.data
+        user.email = form.email.data
+        user.active = form.active.data
+
+        if form.new_password.data != form.verify_password.data:
+            flash('Unable to save changes as passwords for not match for {}!'.format(user.name))
+            return render_template('user_create.html', title='Register New User', form=form, edit_disabled=False)
+
+        minimum_password_strength = application.config.get('MINIMUM_PASSWORD_STRENGTH', 0.3)
+        if user.check_password_strength(form.new_password.data) < minimum_password_strength:
+            flash('Unable to save changes as password is not strong enough for {}!'.format(user.name))
+            return render_template('user_create.html', title='Register New User', form=form, edit_disabled=False)
+
+        user.set_password(form.new_password.data)
+
+        db.session.add(user)
+        db.session.commit()
+
+        flash('User details for {} have been updated.'.format(user.name))
+        return redirect(url_for('user', id=user.id))
+
+    return render_template('user_create.html', title='Register New User', form=form, edit_disabled=False)
+
+
+@application.route('/patient_search', methods=['GET', 'POST'])
+@login_required
+def patient_search():
+    form = PatientSearchForm()
+    form.center_id.choices = id_choices(db.session, Center, include_empty=True)
+
+    if form.validate_on_submit():
+        f = like_all({
+            Patient.name: form.name.data,
+            Patient.national_id: form.national_id.data,
+            Patient.birth_year: form.birth_year.data,
+            Patient.gender: form.gender.data,
+            Patient.address: form.address.data,
+        })
+
+        f.append(or_(Patient.phone_1.like('%' + form.phone.data + '%'),
+                     Patient.phone_2.like('%' + form.phone.data + '%'), ))
+
+        if form.center_id.data != '':
+            f.append(Patient.center_id.is_(form.center_id.data))
+
+        patients = db.session.query(Patient).filter(f).order_by(Patient.name).all()
+        return render_template('patient_search.html', title='Patient Search', form=form, results=patients)
     else:
-        return jsonify(restful.all_as_dict(dao.find_all()))
+        form.center_id.data = str(current_user.center.id)
+
+    return render_template('patient_search.html', title='Patient Search', form=form, results=[])
 
 
-@application.route('/thmr/data/<string:entity_name>/<int:id>', methods=['GET'])
-def get_entity_by_id(entity_name, id):
-    dao = Dao(application.database.create_session(), entity_name)
-    return jsonify(restful.one_as_dict(dao.find_id(id)))
+@application.route('/patient/create', methods=['GET', 'POST'])
+@login_required
+def patient_create():
+    patient = Patient()
+    events = db.session.query(Event).filter(Event.patient_id == patient.id).order_by(Event.date).all()
 
+    form = PatientEditForm(obj=patient)
+    form.center_id.choices = id_choices(db.session, Center, include_empty=True)
 
-@application.route('/thmr/data/<string:entity_name>', methods=['POST'])
-def add_entity(entity_name):
-    dao = Dao.find_dao(application.database.create_session(), entity_name)
-    entity = dao.new(entity_name)
+    if form.validate_on_submit():
+        copy_to_patient(form, patient)
+        patient.created_by = current_user
+        patient.updated_by = current_user
 
-    d = restful.json_loads(request.json)
-    entity.from_dict(d)
-
-    return dao.add(entity)
-
-
-@application.route('/thmr/data/<string:entity_name>/<int:id>', methods=['PUT'])
-def update_entity(entity_name, id):
-    dao = Dao.find_dao(application.database.create_session(), entity_name)
-    d = restful.json_loads(request.json)
-
-    if 'id' in d.keys() and d['id'] != id:
-        raise ValueError('The  URL was for id {} but the object sent had id {}!'.format(id, d['id']))
+        db.session.add(patient)
+        db.session.commit()
+        flash('New patient {} has been recorded.'.format(patient.name))
+        return redirect(url_for('patient', id=patient.id))
     else:
-        d['id'] = id
+        if patient.birth_year:
+            form.age.data = datetime.date.today().year - patient.birth_year
 
-    return dao.apply_update(d)
+        form.center_id.data = str(current_user.center.id)
+
+    return render_template('patient.html', title='New Patient Details',
+                           form=form, patient=patient, events=events, mode='create')
+
+
+@application.route('/patient/<int:id>', methods=['GET', 'POST'])
+@login_required
+def patient(id):
+    patient = db.session.query(Patient).filter(Patient.id == id).first()
+    if patient is None:
+        return error('Unable to find patient with id {}.'.format(id))
+
+    events = db.session.query(Event).filter(Event.patient_id == patient.id).order_by(Event.date).all()
+
+    form = PatientEditForm(obj=patient)
+    form.center_id.choices = id_choices(db.session, Center, include_empty=True)
+
+    if form.validate_on_submit():
+        copy_to_patient(form, patient)
+        patient.updated_by = current_user
+
+        db.session.commit()
+        flash('Patient details for {} have been updated.'.format(patient.name))
+        return redirect(url_for('patient', id=patient.id))
+    else:
+        form.age.data = datetime.date.today().year - patient.birth_year
+        form.center_id.data = str(current_user.center.id)
+
+    return render_template('patient.html', title='Patient Details for {}'.format(patient.name),
+                           form=form, patient=patient, events=events, mode='load')
+
+
+@application.route('/event/<int:id>', methods=['GET', 'POST'])
+@login_required
+def event(id):
+    return _event(id, False)
+
+
+@application.route('/event_inline/<int:id>', methods=['GET', 'POST'])
+@login_required
+def event_inline(id):
+    return _event(id, True)
+
+
+def _event(id, inline):
+    event = db.session.query(Event).filter(Event.id == id).first()
+    if event is None:
+        return error('Unable to find an event with id {}.'.format(id))
+
+    helper = event_helper.find_helper(event)
+    form = helper.form(event, inline)
+    helper.populate_choices(db.session, form)
+
+    if form.validate_on_submit():
+        helper.copy_to_event(form, event)
+        event.updated_by = current_user
+
+        db.session.commit()
+        flash('{} details have been updated.'.format(helper.title()))
+        return redirect(url_for('event', id=event.id))
+
+    return render_template(helper.template(inline), title=helper.title(),
+                           form=form, event=event, mode='load', inline=inline)
+
+
+@application.route('/event/create/<string:type>', methods=['GET', 'POST'])
+@login_required
+def event_create(type):
+    return _event_create(type, False)
+
+
+@application.route('/event_inline/create/<string:type>', methods=['GET', 'POST'])
+@login_required
+def event_create_inline(type):
+    return _event_create(type, True)
+
+
+def _event_create(type, inline):
+    helper = event_helper.find_helper(type)
+    event = helper.event()
+    form = helper.form(event, inline)
+    helper.populate_choices(db.session, form)
+
+    if form.validate_on_submit():
+        helper.copy_to_event(form, event)
+
+        event.created_by = current_user
+        event.updated_by = current_user
+
+        db.session.add(event)
+        db.session.commit()
+        flash('New {} has been recorded.'.format(helper.title()))
+        return redirect(url_for('event', id=event.id))
+
+    _log_errors(form)
+    return render_template(helper.template(inline), title=helper.title(),
+                           form=form, event=event, mode='create')
+
+
+@application.route('/prefetch/patients', methods=['GET'])
+def patients_prefetch():
+    return restful.json_dumps(db.session.query(Patient.name).order_by(Patient.name).all())
+
+
+@application.route('/prefetch/centers', methods=['GET'])
+def centers_prefetch():
+    return restful.json_dumps(db.session.query(Center.name).order_by(Center.name).all())
 
 
 def _field_errors(form):
@@ -419,41 +352,7 @@ def _field_errors(form):
     return errors
 
 
-def _patient_id_choices(include_empty=False):
-    choices = [(str(h.id), h.name) for h in
-               db.session.query(Patient).order_by(Patient.name).all()]
-
-    if include_empty:
-        choices = [('', '(Any)')] + choices
-
-    return choices
-
-
-def _hospital_id_choices(include_empty=False):
-    choices = [(str(h.id), h.name) for h in
-               db.session.query(Hospital).order_by(Hospital.name).all()]
-
-    if include_empty:
-        choices = [('', '(Any)')] + choices
-
-    return choices
-
-
-def _attendee_id_choices(include_empty=False):
-    choices = [(str(h.id), h.name) for h in
-               db.session.query(User).order_by(User.name).all()]
-
-    if include_empty:
-        choices = [('', '(Any)')] + choices
-
-    return choices
-
-
-def _procedure_id_choices(include_empty=False):
-    choices = [(str(h.id), h.name) for h in
-               db.session.query(Procedure).order_by(Procedure.name).all()]
-
-    if include_empty:
-        choices = [('', '(Any)')] + choices
-
-    return choices
+def _log_errors(form):
+    if form.errors:
+        for field, err in form.errors.items():
+            logging.warning('Error in field {}: {}'.format(field, err))

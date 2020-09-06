@@ -1,0 +1,13 @@
+pytest
+awsebcli
+Flask
+Flask-Login
+Flask-SQLAlchemy
+Flask-WTF
+mysql-connector
+SQLAlchemy
+WTForms
+pandas
+openpyxl
+password-strength
+

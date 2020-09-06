@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block head %}
+{% endblock %}
+{% block title %}Episode{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg">
+            <h1>{{ title }}</h1>
+            <hr/>
+            {% include 'forms/discharge_form.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('static', filename='js/event.js') }}"></script>
+<script src="{{ url_for('static', filename='js/discharge.js') }}"></script>
+{% endblock %}

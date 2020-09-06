@@ -1,6 +1,6 @@
 /**
-    https://jsfiddle.net/Mottie/4E2L6/9/
-**/
+ https://jsfiddle.net/Mottie/4E2L6/9/
+ **/
 (function ($) {
     'use strict';
 
@@ -50,12 +50,9 @@
                     value = $.trim($(cell).text());
                 }
 
-                if (value == "")
-                {
-                    if($(cell).length == 1)
-                    {
-                        if(notNull($(cell)[0]) && notNull($(cell)[0].firstChild))
-                        {
+                if (value == "") {
+                    if ($(cell).length == 1) {
+                        if (notNull($(cell)[0]) && notNull($(cell)[0].firstChild)) {
                             value = $.trim($(cell)[0].firstChild.value)
                         }
                     }
@@ -83,7 +80,7 @@
 
         var construct = function (table, headings) {
             var i, j, len, len2, txt, $row, $cell,
-            tmpArray = [],
+                tmpArray = [],
                 cellIndex = 0,
                 result = [];
             table.children('tbody,*').children('tr').each(function (rowIndex, row) {
