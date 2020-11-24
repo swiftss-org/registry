@@ -11,4 +11,4 @@ if __name__ == '__main__':
     application = create_app()
 
     if args.flask:
-        application.run(debug=True)
+        application.run(host='0.0.0.0', debug=True)
