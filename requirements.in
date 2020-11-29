@@ -1,5 +1,5 @@
+pip-tools
 pytest
-awsebcli
 Flask
 Flask-Login
 Flask-SQLAlchemy
@@ -10,4 +10,3 @@ WTForms
 pandas
 openpyxl
 password-strength
-

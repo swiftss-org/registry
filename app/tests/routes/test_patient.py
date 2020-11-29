@@ -17,7 +17,7 @@ def test_patient(flask_client_logged_in):
     assert 'New patient details for {} have been registered.'.format(test_patient_dict['name']) in str(response.data)
 
     # Assert that the patient we create is actually in the database
-    from app import db
+    from application import db
     f = like_all({Patient.name: test_patient_dict['name']})
     patients = db.session.query(Patient).filter(f).order_by(Patient.name).all()
     assert len(patients) == 1

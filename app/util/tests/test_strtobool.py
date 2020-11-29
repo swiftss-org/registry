@@ -1,4 +1,4 @@
-from app import strtobool
+from app.util.strtobool import strtobool
 from app.util.strtobool import strtobool_optional
 
 

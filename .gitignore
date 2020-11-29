@@ -113,6 +113,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Virtual Env
+venv/
+
 # Visual Studio Code
 *code-workspace
 .vscode/

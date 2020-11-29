@@ -6,7 +6,7 @@ from flask import request, render_template, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
-from app import db, login, initalise, constants
+from app import initalise, constants
 from app.forms import LoginForm, PatientSearchForm, PatientEditForm, UserEditForm
 from app.models import User, Patient, Event, Center, PatientDischargeTracker
 from app.route_helper import event_helper
@@ -14,6 +14,8 @@ from app.route_helper.choices import id_choices
 from app.route_helper.patient_helper import copy_to_patient
 from app.util import restful
 from app.util.filter import like_all
+
+from application import db, login
 
 from sqlalchemy import or_
 
