@@ -27,6 +27,13 @@ $ python -m pip install pip-tools
 $ pip-sync
 ~~~
 
+(Optional) Set environment variables to make testing & debugging easier
+~~~
+$ export ADMIN_RESET_DB=True                # Creates a new local SQLite database
+$ export ADMIN_GENERATE_DATA=True           # Creates minimal test data
+$ export DEFAULT_TEST_ACCOUNT_LOGIN=True    # Disables end-user authentication   
+~~~
+
 Run registry!
 ~~~
 $ export FLASK_APPLICATION="application.py"
