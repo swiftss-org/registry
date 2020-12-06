@@ -1,8 +1,9 @@
 import logging
 import os
 
-from app import strtobool, base_data
+from app import base_data
 from app.tests import test_data
+from app.util.strtobool import strtobool
 
 
 def initalise(application):

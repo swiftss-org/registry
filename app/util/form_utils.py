@@ -1,4 +1,4 @@
-from app import strtobool
+from app.util.strtobool import strtobool
 
 
 def choice_for_enum(enum, include_blank=False, blank_value='(Any)'):

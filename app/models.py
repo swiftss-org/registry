@@ -1,5 +1,4 @@
 import enum
-import logging
 from datetime import datetime, date
 
 from flask_login import UserMixin
@@ -8,7 +7,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Date, Enum
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app import db
+from application import db
 
 SHORT_TEXT_LENGTH = 60
 LONG_TEXT_LENGTH = 240

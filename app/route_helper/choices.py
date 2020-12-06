@@ -1,4 +1,4 @@
-from app import db
+from application import db
 
 
 def id_choices(session, named_entity, include_empty=False, empty_value='(Any)'):

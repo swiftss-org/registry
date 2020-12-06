@@ -36,18 +36,35 @@ $ export DEFAULT_TEST_ACCOUNT_LOGIN=True    # Disables end-user authentication
 
 Run registry!
 ~~~
-$ python run.py --help
+$ export FLASK_APPLICATION="application.py"
+$ flask run
 ~~~
+
+The registry will now be running on http://127.0.0.1:5000
+
+## Building and running under Docker
+~~~
+# From inside the 'registry' directory created by git clone
+# Build the Docker container
+$ docker build -t swiftss-registry:latest .
+
+# Run the container, using the default development.env environment variables 
+$ docker run --detach --env-file development.env --publish 5000:5000 swiftss-registry
+~~~
+
+The registry will now be running on http://127.0.0.1:5000
 
 ## Layout
 Registry follows the standard layout for a Flask application.
 
-- application.py provides WSGI entry point
-- app/routes defines the URL routing and is the main entry point for the application
-- app/forms uses WTForms to define the form data model
-- app/models defines the underlying data models in SQLAlchemy
-- app/formatters provides front-end formatters for types such as dates, datetimes, etc.
-- app/reporting defines functions that convert the underlying data models into Pandas DataFrames for reporting.
+- `application.py` provides Flask (WSGI) entry point
+- `app` defines the flask application
+    - `app/routes` defines the URL routing and is the main entry point for the application
+    - `app/forms` uses WTForms to define the form data model
+    - `app/models` defines the underlying data models in SQLAlchemy
+    - `app/formatters` provides front-end formatters for types such as dates, datetimes, etc.
+- `static` contains static files; css, js, images, etc.
+- `templates` contains the html templates used by `app/routes.py`.
 
 ## Data Model
 The data model is built around Patients and Episodes.
