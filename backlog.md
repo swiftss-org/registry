@@ -1,27 +1,32 @@
 # Registry Backlog
 
-## Home Page
-List of non-discharged patients by centre grouped by centre.
-Reporting Tools – does nothing for now.
-DQ
+## Landing Page
+- Add a list of non-discharged patients, grouped by centre, to the bottom of the page (below the fold).
+- Add a 'data quality' section showing recent activity and data quality errors; see [Data Quality](#Data-Quality-Checks) 
+- ~~Add a reporting tools panel to export data~~; does nothing for now.
 
 ## Patient Details
-Hospital Number
-Show Id (as unique serial number)
-Date of birth OR Year of birth
-Phone #1 + Comments & Phone #2 + Comments (phone number formatting?)
-Record New Surgery shows drop-down with different hernia repair.
+- Add additional fields to capture: 
+  - ~~Hospital Number~~
+  - An automatically generated id (as unique serial number)
+  - ~~Date of birth OR Year of birth~~
+  - ~~Phone #1 + Comments & Phone #2 + Comments~~ (Phone number formatting??)
+- ~~Record New Surgery shows drop-down with different hernia repair.~~
+- Add type-ahead search box (Google style) that searches across all patient fields
 
-## Followup
-Tri-state bools [None, Yes, No]; as buttons.
+## Follow-Up
+- ~~Use Tri-state bools [None, Yes, No] as buttons for follow-up observations.~~
 
 ## Discharge
-Create new event type, discharge
-Perioperative Complications: Bool + TextBox.
-Post-Operative Antibiotics Given: bool with text-field on true.
-IV for how many days / oral for how many days
+- ~~Create new event type, discharge~~
+- Add additional fields to capture:
+  - ~~Perioperative Complications: Bool + TextBox.~~
+  - ~~Post-Operative Antibiotics Given: bool with text-field on true.~~
+  - ~~IV for how many days / oral for how many days~~
 
 ## Mesh Herina Repair
+> :x: **This screen is currently broken.** @apaulsmith to fix ASAP.  
+
 Select boxes to default to empty and force to choose one.
 Information icon next to choices.
 Side == Both / Record “both” as two separate hernia surgeries.
