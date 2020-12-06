@@ -27,20 +27,20 @@ $ python -m pip install pip-tools
 $ pip-sync
 ~~~
 
-(Optional) Set environment variables to make testing & debugging easier
+*Optionally* set environment variables to make testing & debugging easier
 ~~~
 $ export ADMIN_RESET_DB=True                # Creates a new local SQLite database
 $ export ADMIN_GENERATE_DATA=True           # Creates minimal test data
 $ export DEFAULT_TEST_ACCOUNT_LOGIN=True    # Disables end-user authentication   
 ~~~
 
-Run registry!
+Run Flask
 ~~~
 $ export FLASK_APPLICATION="application.py"
 $ flask run
 ~~~
 
-The registry will now be running on http://127.0.0.1:5000
+The Registry will now be running on http://127.0.0.1:5000
 
 ## Building and running under Docker
 ~~~
@@ -52,7 +52,9 @@ $ docker build -t swiftss-registry:latest .
 $ docker run --detach --env-file development.env --publish 5000:5000 swiftss-registry
 ~~~
 
-The registry will now be running on http://127.0.0.1:5000
+The Registry will now be running on http://127.0.0.1:5000
+
+> **_NOTE:_**  The `development.env` sets `ADMIN_RESET_DB`, `ADMIN_GENERATE_DATA` and `DEFAULT_TEST_ACCOUNT_LOGIN` environment variables all to **True**.
 
 ## Layout
 Registry follows the standard layout for a Flask application.
