@@ -4,7 +4,7 @@ Tanzania Mesh Hernia Registry, is a mobile-first website and database designed t
 The code is available under a GPL v3 license on git clone https://github.com/swiftss-org/registry. 
 
 ## Backlog
-A backlog of development to be done can be found at [backlog.md].
+A backlog of development to be done can be found at [./backlog.md](backlog.md).
 
 ## Implementation
 Registry is a Python 3 Flask application using SQLAlchemy for persistence. It is hosted on AWS ElasticBeanstalk backed by an AWS RDS Aurora MySQL compatible database. Bootstrap is used as the front-end component library. The code is maintained in GitHub and licensed under GPL v3. VirtualEnv is used to maintain Python dependencies. PyTest is used as a unit testing framework.
