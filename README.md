@@ -56,6 +56,25 @@ The Registry will now be running on http://127.0.0.1:5000
 
 > **_NOTE:_**  The `development.env` sets `ADMIN_RESET_DB`, `ADMIN_GENERATE_DATA` and `DEFAULT_TEST_ACCOUNT_LOGIN` environment variables all to **True**.
 
+## Database Configuration
+The database to connect to is looked up at application start time (see `create_app()` in `application.py`).
+It follows a priority sequence -
+1. If a full database URI is provided by `RDS_URL` use that.
+2. If a set of MySQL parameters are provided by use those.
+3. Else create a local SQLLite file in the temp directory.
+
+### Full Database URI
+You can specify a single fully formed URL as  `RDS_URL` which is passed to SQLAlchemy as the `SQLALCHEMY_DATABASE_URI`.
+See https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/ for syntax details. 
+
+### MySQL Parameters
+Alternatively for MySQL you can specify the properties individually with -
+- `RDS_DB_NAME`
+- `RDS_USERNAME`
+- `RDS_PASSWORD`
+- `RDS_HOSTNAME`
+- `RDS_PORT`
+
 ## Layout
 Registry follows the standard layout for a Flask application.
 
