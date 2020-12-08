@@ -45,7 +45,7 @@ $ flask run
 
 The Registry will now be running on http://127.0.0.1:5000
 
-## Building and running under Docker
+## Building and running under Docker 
 ~~~
 # From inside the 'registry' directory created by git clone
 # Build the Docker container
@@ -157,11 +157,12 @@ The load balancer fronts https to the world and redirect to http internally with
 Custom domain name routing is achieved by a CNAME entry on the swiftss.org domain pointing to the EB instance.
 
 ## Docker
+*Please see [the earlier section on Docker](#Building-and-running-under-Docker) for instructions to build and run the regsistry as a Docker image.*
+
 Build a docker container
 ~~~
-
 cd thmr
-> docker build -t mesh -f Docker/Dockerfile .
+> _docker build -t mesh -f Docker/Dockerfile .
 
 This builds an image tagged as mesh, 
 
