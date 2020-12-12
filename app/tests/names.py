@@ -120,6 +120,10 @@ def phone() -> str:
     return s
 
 
+def phone_type() -> str:
+    return random.choice(['mobile', 'office', 'home'])
+
+
 def email(name: str) -> str:
     surname, first_name = name.split(',')
     surname = surname.lower().strip()
