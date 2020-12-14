@@ -9,6 +9,15 @@ from app.tests import names
 from app.util import pwd_generator
 
 
+def test_base_data(database_session):
+    create_sample_data(database_session,
+                       num_users=12,
+                       num_patients=50)
+
+    assert len(database_session.query(User).all()) == 12 + 2
+    assert len(database_session.query(Center).all()) == 25
+
+
 def create_test_user(session):
     test_user = User(name='Test, Account', email=constants.TEST_ACCOUNT_EMAIL)
     test_user.set_password(constants.TEST_ACCOUNT_PASSWORD)
@@ -16,11 +25,7 @@ def create_test_user(session):
 
 
 def create_sample_data(session, num_users: int, num_patients: int):
-    if session.query(User).filter(User.email == constants.TEST_ACCOUNT_EMAIL).count() == 1:
-        logging.info('Data generator has already been run in this database so skipping.')
-        return
-    else:
-        logging.info('Running data generator.')
+    logging.info('Running data generator.')
 
     users = _users(num_users)
     session.add_all(users)
@@ -59,15 +64,16 @@ def _patients(num: int, centers, users) -> List[Patient]:
     for i in range(0, num):
         gender = random.choice(['M', 'F'])
         name = names.name(gender)
-        national_id = _national_id()
 
         patients.append(Patient(
             name=name,
             gender=gender,
-            birth_year=date.today().year - random.randint(18, 90),
-            national_id=national_id,
+            dob=date.today() - timedelta(days=random.randint(365 * 18, 365 * 90)),
+            dob_year_only=random.choice([True, False]),
+            national_id=_national_id(),
             address=names.address(),
-            phone=names.phone(),
+            phone_1=names.phone(),
+            phone_1_comments=names.phone_type(),
             center=random.choice(centers),
             created_by=random.choice(users),
             updated_by=random.choice(users)

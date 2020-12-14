@@ -1,8 +1,9 @@
 import pytest
 
-from app import create_app, constants, base_data
+from app import constants, base_data
 from app.tests import test_data
 from app.tests.routes.test_login import _login
+from application import create_app
 
 TEST_NUM_USERS = 12
 TEST_NUM_PATIENTS = 50

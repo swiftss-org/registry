@@ -262,7 +262,8 @@ def patient(id):
         return redirect(url_for('patient', id=patient.id))
     else:
         form.age.data = datetime.date.today().year - patient.birth_year
-        form.center_id.data = str(current_user.center.id)
+        if current_user.center:
+            form.center_id.data = str(current_user.center.id)
 
     return render_template('patient.html', title='Patient Details for {}'.format(patient.name),
                            form=form, patient=patient, events=events, mode='load')
