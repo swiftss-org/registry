@@ -8,7 +8,7 @@ def strtobool(val):
     if val is None:
         return 0
 
-    val = val.lower()
+    val = val.lower().strip()
     if val in ('y', 'yes', 't', 'true', 'on', '1'):
         return 1
     elif val in ('n', 'no', 'f', 'false', 'off', '0'):

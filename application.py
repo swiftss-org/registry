@@ -17,6 +17,11 @@ LOG_FORMAT = '%(asctime)-15s [%(levelname)s] %(message)s'
 LOG_DATE_FMT = '%Y-%m-%d %H:%M:%S'
 
 
+from dotenv import load_dotenv
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')  # Path to .env file
+load_dotenv(dotenv_path)
+
+
 def create_app(unit_test=False):
     """Initialize the core app."""
 
@@ -26,8 +31,8 @@ def create_app(unit_test=False):
 
     if unit_test:
         database_url = 'sqlite://'
-    elif 'RDS_URL' in os.environ:
-        database_url = os.environ['RDS_URL']
+    elif 'RDS_URL' in os.environ or 'DATABASE_URL' in os.environ:
+        database_url = os.environ.get('RDS_URL') or os.environ.get('DATABASE_URL')
     elif 'RDS_HOSTNAME' in os.environ:
         DATABASE = {
             'NAME': os.environ['RDS_DB_NAME'],
@@ -86,3 +91,5 @@ if __name__ == '__main__':
     print('Please start the registry application from Flask:')
     print('\t`export FLASK_APP="application.py"`')
     print('\t`flask run`\n')
+elif os.environ.get("HEROKU"):
+    app = create_app()

@@ -6,7 +6,7 @@ from app.tests import test_data
 from app.util.strtobool import strtobool
 
 
-def initalise(application):
+def initialise(application):
     logging.info('Initalising application.')
 
     if strtobool(os.environ.get('ADMIN_RESET_DB', str(False))):
