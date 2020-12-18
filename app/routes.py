@@ -6,7 +6,7 @@ from flask import request, render_template, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
-from app import initalise, constants
+from app import initialise, constants
 from app.forms import LoginForm, PatientSearchForm, PatientEditForm, UserEditForm
 from app.models import User, Patient, Event, Center, PatientDischargeTracker
 from app.route_helper import event_helper
@@ -22,7 +22,7 @@ from sqlalchemy import or_
 
 @application.before_first_request
 def before_first_request():
-    initalise.initalise(application)
+    initialise.initialise(application)
 
 
 @login.user_loader
@@ -68,7 +68,6 @@ def login():
 
     if application.config.get('DEFAULT_TEST_ACCOUNT_LOGIN'):
         form.username.data = constants.TEST_ACCOUNT_EMAIL
-        form.password.data = constants.TEST_ACCOUNT_PASSWORD
 
     if form.validate_on_submit():
         user = db.session.query(User).filter_by(email=form.username.data).first()
