@@ -9,6 +9,7 @@ def create(session):
     _create_users(session)
     _create_centers(session)
     _create_drugs(session)
+    _create_mesh_types(session)
 
 
 def create_test_user(session):
