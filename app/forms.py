@@ -5,6 +5,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Selec
     HiddenField, IntegerField, DateField
 from wtforms.validators import DataRequired, Optional
 
+from app import base_data
 from app.models import Cepod, Side, Occurrence, InguinalHerniaType, Complexity, AnestheticType, Pain
 from app.util.form_utils import choice_for_bool, coerce_for_bool, choice_for_enum, coerce_for_enum
 from app.validators import validate_pain_comments, validate_aware_of_mesh, validate_infection, validate_seroma, \
@@ -187,13 +188,16 @@ class InguinalMeshHerniaRepairForm(EventForm):
                              choices=choice_for_enum(Complexity, include_blank=False),
                              coerce=coerce_for_enum(Complexity),
                              validators=[DataRequired()])
-    mesh_type = StringField('Mesh Type', validators=[DataRequired()])
+
+    mesh_type_id = SelectField('Mesh Type', validators=[DataRequired()])
+
     anaesthetic_type = SelectField('Anaesthetic Type',
                                    choices=choice_for_enum(AnestheticType, include_blank=False),
                                    coerce=coerce_for_enum(AnestheticType),
                                    validators=[DataRequired()])
     anaesthetic_other = StringField('Anaesthetic Other', validators=[Optional()])
     diathermy_used = HiddenField('Diathermy Used?', validators=[Optional()])
+    discharge_date = DateField('Discharge Date', validators=[Optional()], default=date.today)
 
     primary_surgeon_id = SelectField('Primary Surgeon', validators=[Optional()])
     secondary_surgeon_id = SelectField('Secondary Surgeon', validators=[Optional()])

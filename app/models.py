@@ -282,7 +282,10 @@ class InguinalMeshHerniaRepair(Event):
     occurrence = Column(Enum(Occurrence), nullable=False)
     hernia_type = Column(Enum(InguinalHerniaType), nullable=False)
     complexity = Column(Enum(Complexity), nullable=False)
-    mesh_type = Column(String(SHORT_TEXT_LENGTH), nullable=False)
+
+    mesh_type_id = Column(ForeignKey('MeshTypes.id'), primary_key=True, nullable=False)
+    mesh_type = relationship(MeshType, foreign_keys=[mesh_type_id])
+
     antibiotics = relationship("DrugEventAssociation")
     anaesthetic_type = Column(Enum(AnestheticType), nullable=False)
     anaesthetic_other = Column(String(SHORT_TEXT_LENGTH), nullable=False)
