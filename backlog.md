@@ -11,6 +11,7 @@
   - An automatically generated id (as unique serial number)
   - ~~Date of birth OR Year of birth~~
   - ~~Phone #1 + Comments & Phone #2 + Comments~~ (Phone number formatting??)
+  - Antibiotics
 - ~~Record New Surgery shows drop-down with different hernia repair.~~
 - Add type-ahead search box (Google style) that searches across all patient fields
 
