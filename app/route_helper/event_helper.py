@@ -123,7 +123,7 @@ class InguinalMeshHerniaRepairEventHelper(EventHelper):
 
     def populate_choices(self, session, form):
         super().populate_choices(session, form)
-        form.mesh_type.choices = id_choices(session, MeshType, include_empty=False)
+        form.mesh_type_id.choices = id_choices(session, MeshType, include_empty=False)
         form.primary_surgeon_id.choices = id_choices(session, User, include_empty=True)
         form.secondary_surgeon_id.choices = id_choices(session, User, include_empty=True)
         form.tertiary_surgeon_id.choices = id_choices(session, User, include_empty=True)
@@ -135,7 +135,7 @@ class InguinalMeshHerniaRepairEventHelper(EventHelper):
         event.occurrence = form.occurrence.data
         event.hernia_type = form.hernia_type.data
         event.complexity = form.complexity.data
-        event.mesh_type = form.mesh_type.data
+        event.mesh_type_id = form.mesh_type_id.data
         event.anaesthetic_type = form.anaesthetic_type.data
         event.anaesthetic_other = form.anaesthetic_other.data
         event.diathermy_used = strtobool_optional(form.diathermy_used.data)
@@ -159,3 +159,7 @@ def _format_name(name, space_char):
 
 def _hidden_field(field):
     return HiddenField(label=field.label, validators=field.validators)
+
+
+def first_value(session, entity):
+    return session.query(entity).first()
