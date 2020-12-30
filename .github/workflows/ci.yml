@@ -1,0 +1,64 @@
+name: SSO Provider CI/CD
+
+on:
+  push:
+    branches: [ master, staging ]
+  pull_request:
+    branches: [ master, staging ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11-alpine
+        env:
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        python-version: [3.7]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install coverage
+      - name: Run tests
+        env:
+          DATABASE_URL: postgres://postgres:password@127.0.0.1:5432/registry_db
+        run: |
+          coverage run manage.py test
+          coverage report
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ (github.ref == 'refs/heads/master') || (github.ref == 'refs/heads/staging') }}
+    needs:
+      - build
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Deploy master to tmh-registry staging
+        if: github.ref == 'refs/heads/master'
+        uses: akhileshns/heroku-deploy@v3.2.6
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "tmh-registry-staging"
+          heroku_email: "dimitris@orfium.com"
