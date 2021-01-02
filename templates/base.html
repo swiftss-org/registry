@@ -25,7 +25,7 @@
 
 <!-- Flash'ed messages -->
 {% with messages = get_flashed_messages() %}
-{% if messages %}
+{% if messages and messages|length > 0 %}
 <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
         <!-- <img src="..." class="rounded mr-2" alt="..."> -->
