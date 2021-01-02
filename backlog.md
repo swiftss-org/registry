@@ -1,8 +1,8 @@
 # Registry Backlog
 
 ## Landing Page
-- Add a list of non-discharged patients, grouped by centre, to the bottom of the page (below the fold).
 - Add a 'data quality' section showing recent activity and data quality errors; see [Data Quality](#Data-Quality-Checks) 
+- ~~Add a list of non-discharged patients, grouped by centre, to the bottom of the page (below the fold).~~
 - ~~Add a reporting tools panel to export data~~; does nothing for now.
 
 ## Patient Details
@@ -26,8 +26,6 @@
   - ~~IV for how many days / oral for how many days~~
 
 ## Mesh Herina Repair
-> :x: **This screen is currently broken.** @apaulsmith to fix ASAP.  
-
 Select boxes to default to empty and force to choose one.
 Information icon next to choices.
 Side == Both / Record “both” as two separate hernia surgeries.
