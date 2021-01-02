@@ -89,11 +89,6 @@ class FollowupEventHelper(EventHelper):
 
     def form(self, event, inline):
         form = FollowupForm(obj=event, inline=True)
-
-        if inline:
-            if not event.mesh_awareness:
-                form.mesh_awareness_comments = _hidden_field(form.mesh_awareness_comments)
-
         return form
 
     def populate_choices(self, session, form):
@@ -155,10 +150,6 @@ def _format_name(name, space_char):
         nice_name += c
 
     return nice_name
-
-
-def _hidden_field(field):
-    return HiddenField(label=field.label, validators=field.validators)
 
 
 def first_value(session, entity):
