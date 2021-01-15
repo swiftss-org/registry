@@ -73,7 +73,7 @@ class PatientEditForm(FlaskForm):
 
 
 class PatientSearchForm(FlaskForm):
-    id = HiddenField()
+    id = StringField('Patient Id', validators=[Optional()])
     name = StringField('Name', validators=[Optional()])
     national_id = StringField('National Id', validators=[Optional()])
     hospital_number = StringField('Hospital Number', validators=[Optional()])

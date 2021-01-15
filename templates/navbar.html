@@ -24,7 +24,7 @@
         </ul>
         <span class="navbar-text">
       {% if current_user and current_user.is_authenticated %}
-      Logged in as {{ current_user.name }}.
+            Logged in as <a href="{{ url_for('user', id=current_user.id) }}">{{ current_user.name }}</a>.
       {% else %}
       Not logged in.
       {% endif %}

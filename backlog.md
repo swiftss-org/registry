@@ -8,7 +8,7 @@
 ## Patient Details
 - Add additional fields to capture: 
   - ~~Hospital Number~~
-  - An automatically generated id (as unique serial number)
+  - ~~An automatically generated id (as unique serial number)~~
   - ~~Date of birth OR Year of birth~~
   - ~~Phone #1 + Comments & Phone #2 + Comments~~ (Phone number formatting??)
   - Antibiotics
