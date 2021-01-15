@@ -14,4 +14,8 @@ def like_append(filter, column, value):
     if value is not None:
         s = str(value)
         if len(s) > 0:
-            filter.append(column.like('%' + s + '%'))
+            try:
+                # The column can be a property object which does not support like queries.
+                filter.append(column.like('%' + s + '%'))
+            except AttributeError:
+                pass

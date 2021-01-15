@@ -17,7 +17,7 @@ from app.util.filter import like_all
 
 from application import db, login
 
-from sqlalchemy import or_
+from sqlalchemy import and_, or_
 
 
 if application.config.get('TESTING'):
@@ -191,6 +191,9 @@ def patient_search():
     form.center_id.choices = id_choices(db.session, Center, include_empty=True)
 
     if form.validate_on_submit():
+        if form.id.data and len(form.id.data.strip()) > 0:
+            return redirect(url_for('patient', id=form.id.data))
+
         f = like_all({
             Patient.name: form.name.data,
             Patient.national_id: form.national_id.data,
@@ -199,11 +202,11 @@ def patient_search():
             Patient.address: form.address.data,
         })
 
-        f.append(or_(Patient.phone_1.like('%' + form.phone.data + '%'),
-                     Patient.phone_2.like('%' + form.phone.data + '%'), ))
+        f = and_(f, or_(Patient.phone_1.like('%' + form.phone.data + '%'),
+                    Patient.phone_2.like('%' + form.phone.data + '%'), ))
 
         if form.center_id.data != '':
-            f.append(Patient.center_id.is_(form.center_id.data))
+            f = and_(f, Patient.center_id.is_(form.center_id.data))
 
         patients = db.session.query(Patient).filter(f).order_by(Patient.name).all()
         return render_template('patient_search.html', title='Patient Search', form=form, results=patients)
