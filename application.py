@@ -50,6 +50,7 @@ def create_app(unit_test=False):
 
     app.config.from_mapping(
         SECRET_KEY=os.environ.get('SECRET_KEY') or pwd_generator.password(),
+        TESTING=unit_test,
         SQLALCHEMY_DATABASE_URI=database_url,
         SQLALCHEMY_POOL_RECYCLE=280,
         SQLALCHEMY_TRACK_MODIFICATIONS=False,

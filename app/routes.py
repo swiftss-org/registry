@@ -20,9 +20,10 @@ from application import db, login
 from sqlalchemy import or_
 
 
-@application.before_first_request
-def before_first_request():
-    initialise.initialise(application)
+if application.config.get('TESTING'):
+    @application.before_first_request
+    def before_first_request():
+        initialise.initialise(application)
 
 
 @login.user_loader

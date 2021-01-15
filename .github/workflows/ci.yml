@@ -41,7 +41,7 @@ jobs:
         env:
           DATABASE_URL: postgres://postgres:password@127.0.0.1:5432/registry_db
         run: |
-          coverage run manage.py test
+          coverage run pytest
           coverage report
 
   deploy:
