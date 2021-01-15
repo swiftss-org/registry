@@ -6,7 +6,7 @@ from flask import request, render_template, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
-from app import initialise, constants
+from app import constants
 from app.forms import LoginForm, PatientSearchForm, PatientEditForm, UserEditForm
 from app.models import User, Patient, Event, Center, PatientDischargeTracker
 from app.route_helper import event_helper
@@ -18,12 +18,6 @@ from app.util.filter import like_all
 from application import db, login
 
 from sqlalchemy import and_, or_
-
-
-if application.config.get('TESTING'):
-    @application.before_first_request
-    def before_first_request():
-        initialise.initialise(application)
 
 
 @login.user_loader

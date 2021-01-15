@@ -1,7 +1,6 @@
 import pytest
 
 from app import constants, base_data
-from app import initialise
 from app.tests import test_data
 from app.tests.routes.test_login import _login
 from application import create_app
